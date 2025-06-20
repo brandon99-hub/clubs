@@ -1,0 +1,8 @@
+{% extends 'clubs/base.html' %}
+{% load static %}
+{% block content %}
+<h2>{{ event.title }}</h2>
+<p>{{ event.description }}</p>
+<p><strong>Event Date:</strong> {{ event.event_date|date:"M d, Y H:i" }}</p>
+<a href="{% url 'event_list' event.club.id %}" class="btn btn-secondary">Back to Events</a>
+{% endblock %}

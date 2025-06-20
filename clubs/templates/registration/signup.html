@@ -1,0 +1,25 @@
+{% extends "clubs/base.html" %}
+{% load static %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
+    <div class="card-header text-center">
+      <h4 class="mb-0">Sign Up</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+      </form>
+      <div class="mt-3 text-center">
+        <small>
+          Already have an account? <a href="{% url 'account_login' %}">Log In</a>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

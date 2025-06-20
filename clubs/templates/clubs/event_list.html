@@ -1,0 +1,16 @@
+{% extends 'clubs/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Events for {{ club.name }}</h2>
+<ul class="list-group">
+    {% for event in events %}
+    <li class="list-group-item">
+        <a href="{% url 'event_detail' event.id %}"><strong>{{ event.title }}</strong></a>
+        <p>{{ event.description|truncatewords:15 }}</p>
+        <small>Event Date: {{ event.event_date|date:"M d, Y H:i" }}</small>
+    </li>
+    {% empty %}
+    <li class="list-group-item">No events available.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

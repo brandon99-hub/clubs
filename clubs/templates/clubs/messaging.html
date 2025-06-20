@@ -1,0 +1,17 @@
+{% extends 'clubs/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Messaging for {{ club.name }}</h2>
+<div class="chat-box border p-3 mb-3" style="height:300px; overflow-y:scroll;">
+    {% for msg in messages %}
+    <p><strong>{{ msg.sender.username }}:</strong> {{ msg.content }} <small class="text-muted">{{ msg.timestamp|date:"H:i" }}</small></p>
+    {% empty %}
+    <p>No messages yet.</p>
+    {% endfor %}
+</div>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+{% endblock %}

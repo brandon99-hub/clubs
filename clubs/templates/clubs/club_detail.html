@@ -1,0 +1,28 @@
+{% extends 'clubs/base.html' %}
+{% load static %}
+{% block content %}
+<h2>{{ club.name }}</h2>
+<p>{{ club.description }}</p>
+<p><strong>Admin:</strong> {{ club.admin.username }}</p>
+
+{% if user.is_authenticated %}
+    {% if membership %}
+        <p>Your membership status: {{ membership.status }}</p>
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Request to Join</button>
+        </form>
+    {% endif %}
+{% else %}
+    <p>Please <a href="{% url 'account_login' %}">login</a> to request membership.</p>
+{% endif %}
+
+<hr>
+<h3>Events</h3>
+<a href="{% url 'event_list' club.id %}" class="btn btn-info">View Club Events</a>
+<hr>
+{% if user.is_authenticated %}
+    <a href="{% url 'messaging' club.id %}" class="btn btn-secondary">Go to Messaging</a>
+{% endif %}
+{% endblock %}

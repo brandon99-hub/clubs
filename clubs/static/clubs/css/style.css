@@ -1,0 +1,69 @@
+/* Base Styling */
+body {
+  padding-top: 60px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #343a40;
+  margin: 0;
+}
+
+/* Navbar Enhancements */
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Container spacing */
+.container {
+  margin-top: 20px;
+}
+
+/* Alert Styling */
+.alert {
+  margin-bottom: 20px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Chat Box Styling */
+.chat-box {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  overflow-y: auto;
+  height: 300px;
+}
+
+.chat-box p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.chat-box p strong {
+  color: #007bff;
+}
+
+/* Footer Styling */
+footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e5e5e5;
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Responsive Media Query Example */
+@media (max-width: 576px) {
+  .navbar-nav {
+    text-align: center;
+  }
+  .chat-box {
+    height: 250px;
+  }
+}
