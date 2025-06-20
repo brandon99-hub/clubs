@@ -1,25 +1,140 @@
 {% extends 'clubs/base.html' %}
+{% load club_extras %}
 {% load static %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-{% for club in clubs %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>{{ club.name }}</h3>
+<div class="container my-4">
+    <!-- Back to Club Details -->
+    {% if clubs %}
+        <a href="{% url 'club_detail' clubs.0.id %}" class="btn btn-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to {{ clubs.0.name }}
+        </a>
+    {% else %}
+        <p class="text-danger">No club selected or no clubs available.</p>
+    {% endif %}
+
+    <h2 class="text-center">Admin Dashboard</h2>
+
+    <!-- Loop over clubs -->
+    {% if clubs %}
+        {% for club in clubs %}
+            {% if club.id %}
+                <div class="card mb-4">
+                    {% if club.banner %}
+                        <img src="{{ club.banner.url }}" alt="{{ club.name }} Banner" class="admin-dashboard-banner">
+                    {% else %}
+                        <img src="{% static 'clubs/images/placeholder.jpg' %}" alt="Default Banner" class="card-img-top img-fluid"
+                             style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+
+                    <div class="card-header">
+                        <h3>{{ club.name }}</h3>
+                        <p class="text-muted mb-0">Created by: {{ club.admin.username }}</p>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Memberships Section -->
+                        <h5>Pending Membership Requests</h5>
+                        <ul class="list-group">
+                            {% with pending_for_club=pending_memberships|get_item:club.id %}
+                                {% if pending_for_club %}
+                                    {% for membership in pending_for_club %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ membership.user.username }}
+                                            <div>
+                                                <a href="{% url 'approve_member' membership.id %}" class="btn btn-success btn-sm">Approve</a>
+                                                <a href="{% url 'reject_member' membership.id %}" class="btn btn-danger btn-sm">Reject</a>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="list-group-item">No pending requests.</li>
+                                {% endif %}
+                            {% endwith %}
+                        </ul>
+
+                        <!-- Member Count -->
+                        <hr>
+                        <p>
+                            <strong>Total Members:</strong> {{ club.memberships.count }} <br>
+                            <strong>Approved Members:</strong> {{ approved_members|get_item:club.id|length }} <br>
+                            <strong>Pending Members:</strong> {{ pending_memberships|get_item:club.id|length }}
+                        </p>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-warning">This club has an invalid ID or is not available.</p>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="text-muted text-center">No clubs available to display.</p>
+    {% endif %}
+
+    <!-- Statistics Chart -->
+    {% if club_names and member_counts %}
+        <div class="chart-container mt-5">
+            <h4>Membership Statistics Per Club</h4>
+            <div id="loading-indicator" class="text-center">Loading chart...</div> <!-- Loading Indicator -->
+            <canvas id="memberChart" style="display:none;"></canvas> <!-- Initially hidden -->
         </div>
-        <div class="card-body">
-            <h5>Pending Memberships</h5>
-            <ul class="list-group">
-                {% for membership in pending_memberships|get_item:club.id %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ membership.user.username }}
-                        <a href="{% url 'approve_member' membership.id %}" class="btn btn-success btn-sm">Approve</a>
-                    </li>
-                {% empty %}
-                    <li class="list-group-item">No pending memberships.</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-{% endfor %}
+    {% else %}
+        <p class="text-center text-danger mt-5">No data available for chart generation.</p>
+    {% endif %}
+
+    <!-- Chart.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script id="club-names" type="application/json">{{ club_names }}</script>
+    <script id="member-counts" type="application/json">{{ member_counts }}</script>
+    <script id="approved-counts" type="application/json">{{ approved_counts }}</script>
+    <script id="pending-counts" type="application/json">{{ pending_counts }}</script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Parse JSON data passed from the Django view
+            const clubNames = JSON.parse(document.getElementById('club-names').textContent || '[]');
+            const memberCounts = JSON.parse(document.getElementById('member-counts').textContent || '[]');
+            const approvedCounts = JSON.parse(document.getElementById('approved-counts').textContent || '[]');
+            const pendingCounts = JSON.parse(document.getElementById('pending-counts').textContent || '[]');
+
+            if (clubNames.length && memberCounts.length) {
+                // Build the Chart.js graph
+                const ctx = document.getElementById('memberChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: clubNames,
+                        datasets: [
+                            {
+                                label: 'Approved Members',
+                                data: approvedCounts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Pending Members',
+                                data: pendingCounts,
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                document.getElementById('loading-indicator').remove();
+                document.getElementById('memberChart').style.display = 'block';
+            } else {
+                document.getElementById('loading-indicator').textContent = "No data available to render the chart.";
+            }
+        });
+    </script>
+</div>
 {% endblock %}

@@ -1,69 +1,307 @@
 /* Base Styling */
 body {
-  padding-top: 60px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #343a40;
-  margin: 0;
+    padding-top: 60px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    margin: 0;
 }
 
 /* Navbar Enhancements */
 .navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-brand {
-  font-weight: bold;
-  color: #007bff;
+    font-size: 1.25rem;
+    color: #343a40;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.nav-link {
+    font-size: 1rem;
+    margin-right: 10px;
+    color: #343a40;
+}
+
+.nav-link:hover {
+    color: #0056b3;
+}
+/* Dark Mode Button */
+#darkModeToggle {
+    font-size: 0.9rem;
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    color: #ffffff;
+    background-color: #343a40;
+    border: 1px solid #444444;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#darkModeToggle:hover {
+    background-color: #1f1f1f;
+    color: #90caf9;
+}
+
+/* Back Button Styling */
+.btn-secondary {
+    color: #ffffff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-secondary i {
+    margin-right: 5px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: #e9ecef;
 }
 
 /* Container spacing */
 .container {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 /* Alert Styling */
 .alert {
-  margin-bottom: 20px;
-  transition: opacity 0.3s ease-in-out;
+    margin-bottom: 20px;
+    transition: opacity 0.3s ease-in-out;
 }
 
 /* Chat Box Styling */
 .chat-box {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 15px;
-  overflow-y: auto;
-  height: 300px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    overflow-y: auto;
+    height: 300px;
 }
 
 .chat-box p {
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
 }
 
 .chat-box p strong {
-  color: #007bff;
+    color: #007bff;
 }
 
-/* Footer Styling */
-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e5e5e5;
-  padding: 20px 0;
-  text-align: center;
-  margin-top: 40px;
-}
 
 /* Responsive Media Query Example */
 @media (max-width: 576px) {
-  .navbar-nav {
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .chat-box {
+        height: 250px;
+    }
+}
+
+/* Dark Mode Improvements */
+body.dark-mode {
+    background-color: #181818; /* Darker base color */
+    color: #e0e0e0; /* Softer white for better contrast */
+}
+
+.navbar.dark-mode {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #333333;
+}
+
+.card.dark-mode {
+    background-color: #242424; /* Slightly darker */
+    color: #b3b3b3; /* Muted text for readability */
+    border: 1px solid #333333;
+}
+
+footer.dark-mode {
+    background-color: #202020;
+    color: #c7c7c7;
+}
+
+.alert.dark-mode {
+    background-color: #292929;
+    border: 1px solid #444444;
+    color: #ffffff;
+}
+
+body.dark-mode a {
+    color: #90caf9; /* Soft blue for links */
+}
+
+body.dark-mode .btn {
+    color: #ffffff;
+    background-color: #333333;
+    border: 1px solid #444444;
+}
+
+body.dark-mode .btn.btn-primary {
+    background-color: #2176bd; /* Blue primary */
+    border-color: #1a5d9e;
+}
+
+body.dark-mode .chat-box {
+    background-color: #1f1f1f;
+    border-color: #333333;
+    color: #dcdcdc;
+}
+
+/* User Menu Sidebar Styling */
+.card.user-menu {
+    margin-top: 20px; /* Adds space at the top */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 8px; /* Slightly rounded corners */
+    border: 1px solid #ddd;
+}
+
+.card-header.user-menu-header {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
     text-align: center;
-  }
-  .chat-box {
-    height: 250px;
-  }
+
+}
+
+.card ul.list-group a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.card ul.list-group a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Dark Mode for User Menu */
+body.dark-mode .card.user-menu {
+    background-color: #1f1f1f;
+    border-color: #333333;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card-header.user-menu-header {
+    background-color: #333333;
+    color: #f5f5f5;
+}
+
+body.dark-mode .card ul.list-group a {
+    color: #90caf9;
+}
+
+body.dark-mode .card ul.list-group a:hover {
+    color: #608bae;
+}
+/* Footer Enhancements */
+footer {
+    padding: 30px 0;
+    background-color: #f1f1f1;
+    color: #6c757d;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    margin-top: 40px;
+}
+
+footer a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+footer small {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+/* Social Media Links */
+.footer-social a {
+    margin: 0 15px; /* Space between icons */
+    font-size: 1.25rem; /* Icon size */
+    line-height: 1;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: #0056b3;
+}
+
+/* Dark Mode Footer Styling */
+body.dark-mode footer {
+    background-color: #202020;
+    color: #c7c7c7;
+    border-color: #444444;
+}
+
+body.dark-mode footer a {
+    color: #90caf9;
+}
+
+body.dark-mode footer a:hover {
+    color: #608bae;
+}
+.event-detail-image {
+    max-height: 400px;
+    width: 50%; /* Ensure responsiveness */
+    object-fit: cover; /* Crop image proportionally */
+    border-radius: 8px; /* Rounded corners for aesthetics */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+.admin-dashboard-banner {
+    max-height: 400px; /* Restrict banner height */
+    width: 50%; /* Make the banner responsive */
+    object-fit: cover; /* Maintain aspect ratio and crop excess */
+    border-radius: 4px; /* Slight rounding for consistency */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Light card shadow for depth */
+}
+.navbar.dark-mode {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #333333;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #333333;
+    color: #e0e0e0;
+    border: 1px solid #444444;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #444444;
+    border-color: #555555;
+    color: #ffffff;
+}
+
+body.dark-mode .admin-dashboard-banner {
+    background-color: #1f1f1f;
+    border: 1px solid #333333;
+    color: #dcdcdc;
+}
+/* Back to Club Button for Event List */
+.container .btn-secondary.mb-3 {
+    display: inline-block;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    margin-bottom: 1rem;
 }

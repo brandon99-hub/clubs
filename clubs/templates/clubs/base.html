@@ -3,69 +3,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}School Club Management{% endblock %}</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{% static 'clubs/css/style.css' %}">
-  {% block extra_css %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}School Club Management{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'clubs/images/favicon.png' %}">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'clubs/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+    <!-- SEO Meta -->
+    <meta name="description" content="{% block meta_description %}Manage your school clubs effectively{% endblock %}">
+    <meta name="keywords"
+          content="{% block meta_keywords %}school clubs, events, messaging, school management{% endblock %}">
 </head>
 <body>
-  <header>
+<header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'club_list' %}">Clubs</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-              </li>
-            {% endif %}
-          </ul>
+        <div class="container">
+            <!-- Navbar Brand -->
+            <a class="navbar-brand fw-bold" href="{% url 'club_list' %}">
+                <i class="fas fa-school me-2"></i>Clubs
+            </a>
+
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar Items -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- If user is authenticated -->
+                    {% if user.is_authenticated %}
+                        <!-- User Dropdown Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userMenuDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Hi, {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'profile' %}">
+                                        <i class="fas fa-user-circle me-2"></i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'edit_profile' %}">
+                                        <i class="fas fa-edit me-2"></i> Edit Profile
+                                    </a>
+
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'my_clubs' %}">
+                                        <i class="fas fa-users me-2"></i> My Clubs
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'settings' %}">
+                                        <i class="fas fa-cogs me-2"></i> Account Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Login and Sign Up Buttons for Non-authenticated Users -->
+                        <li class="nav-item">
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary ms-2">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'signup' %}" class="btn btn-outline-secondary ms-2">Sign Up</a>
+                        </li>
+                    {% endif %}
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item ms-3">
+                        <button id="darkModeToggle" class="btn btn-outline-secondary">
+                            <i class="fas fa-adjust me-2"></i> Dark Mode
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
-  </header>
+</header>
 
-  <main class="container my-4">
+<main class="container my-4">
     {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert-messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
         </div>
-      {% endfor %}
     {% endif %}
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer class="bg-light py-3 mt-auto">
-    <div class="container text-center">
-      <small>&copy; {% now "Y" %} School Club Management System. All rights reserved.</small>
+    <div class="col-12">
+        <!-- Main content goes here -->
+        {% block content %}{% endblock %}
     </div>
-  </footer>
+</main>
+<footer class="bg-light py-4 mt-auto border-top">
+    <div class="container text-center">
+        <!-- Social Links -->
+        <small>Follow us:</small>
+        <div class="footer-social my-2 d-flex justify-content-center">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/onbbrand" target="_blank" class="mx-2" aria-label="Instagram Profile"
+               rel="noopener noreferrer">
+                <i class="fab fa-instagram fa-lg"></i>
+            </a>
+            <!-- Twitter -->
+            <a href="https://twitter.com/your_actual_profile" target="_blank" class="mx-2" aria-label="Twitter Profile"
+               rel="noopener noreferrer">
+                <i class="fab fa-twitter fa-lg"></i>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/your_actual_profile" target="_blank" class="mx-2"
+               aria-label="LinkedIn Profile" rel="noopener noreferrer">
+                <i class="fab fa-linkedin fa-lg"></i>
+            </a>
+        </div>
 
-  <!-- Bootstrap 5 JS and dependencies -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Custom JavaScript -->
-  <script src="{% static 'clubs/js/script.js' %}"></script>
-  {% block extra_js %}{% endblock %}
+        <!-- Copyright Section -->
+        <small class="d-block text-muted mt-2">© {% now "Y" %} School Club Management System. All rights
+            reserved.</small>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JavaScript -->
+<script src="{% static 'clubs/js/script.js' %}"></script>
+
+<!-- Additional Page-Specific Scripts -->
+{% block extra_js %}{% endblock %}
 </body>
 </html>

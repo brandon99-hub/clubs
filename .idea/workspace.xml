@@ -1,37 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="13c53ea2-0ffa-4b16-a367-76d40ce2b347" name="Changes" comment="" />
+    <list default="true" id="13c53ea2-0ffa-4b16-a367-76d40ce2b347" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/DjangoProject2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DjangoProject2/celery.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/consumers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/management/commands/create_profiles.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/management/commands/send_digest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/middleware.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/routing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/signals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/static/clubs/css/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/static/clubs/images/avatar_placeholder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/static/clubs/images/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/static/clubs/images/placeholder.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/static/clubs/js/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/tasks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/403.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/add_event.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/admin_dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/club_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/club_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/edit_profile.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/event_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/event_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/messaging.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/my_clubs.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/profile.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/clubs/settings.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/emails/new_message.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_change_done.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_change_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_reset_complete.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_reset_confirm.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_reset_done.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/password_reset_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templates/registration/signup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templatetags/club_extras.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/templatetags/form_filters.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/clubs/utils/email_utils.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/django/contrib/admin/static/admin/css/dark_mode.css" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2tePk3VbZd1jfc9VaEbI5kpXF2o" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Django Server.DjangoProject2.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ADMIN/PycharmProjects/PythonProject/DjangoProject2/clubs/static/clubs/images&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ADMIN\PycharmProjects\PythonProject\DjangoProject2\clubs\static\clubs\images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ADMIN\PycharmProjects\PythonProject\DjangoProject2\DjangoProject2" />
+      <recent name="C:\Users\ADMIN\PycharmProjects\PythonProject\DjangoProject2\Django" />
+      <recent name="C:\Users\ADMIN\PycharmProjects\PythonProject\DjangoProject2\templates\accounts" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="DjangoProject2" type="Python.DjangoServer" factoryName="Django server">
+      <module name="DjangoProject2" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="djangoproject2.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
-        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-PY-243.26053.29" />
+        <option value="bundled-python-sdk-b1dbf8ef85a6-4df51de95216-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.26053.29" />
       </set>
     </attachedChunks>
   </component>
@@ -43,8 +164,39 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1740709707680</updated>
-      <workItem from="1740709709710" duration="87000" />
+      <workItem from="1740709709710" duration="8620000" />
+      <workItem from="1740996670103" duration="56771000" />
+      <workItem from="1741187434343" duration="11576000" />
+      <workItem from="1741608072925" duration="1393000" />
+      <workItem from="1741766643531" duration="1446000" />
+      <workItem from="1741870700705" duration="560000" />
+      <workItem from="1741876187247" duration="591000" />
+      <workItem from="1741881953628" duration="601000" />
+      <workItem from="1741941592508" duration="6895000" />
+      <workItem from="1742143037682" duration="1109000" />
+      <workItem from="1742303071240" duration="2367000" />
+      <workItem from="1744643786573" duration="584000" />
+      <workItem from="1745027380640" duration="641000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/clubs/management/commands/send_digest.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DjangoProject2/celery.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
