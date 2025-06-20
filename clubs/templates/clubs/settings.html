@@ -1,0 +1,30 @@
+{% extends "clubs/base.html" %}
+{% block title %}User Settings{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>User Settings</h2>
+    <p>Update your information and preferences here.</p>
+
+    <!-- Subscription Form -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="subscribed_to_emails"
+                       {% if profile.subscribed_to_emails %}checked{% endif %}>
+                Subscribe to Email Notifications
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <hr>
+    <div>
+        <h4>Change Your Password</h4>
+        <p>
+            Want to update your password?
+            <a href="{% url 'password_change' %}">Click here to change your password</a>.
+        </p>
+    </div>
+
+</div>
+{% endblock %}

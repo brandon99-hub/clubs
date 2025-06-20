@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            color: #333;
+        }
+        .container {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>You Have a New Message!</h2>
+        <p><strong>From:</strong> {{ sender }}</p>
+        <p><strong>Message:</strong> {{ message }}</p>
+        <p>Log in to view and reply to this message.</p>
+        <p>
+            <a href="http://yourwebsite.com/login" style="color: #007bff; text-decoration: none;">Click here to log in</a>
+        </p>
+    </div>
+    <div class="footer">
+        This is an automated email from Your Website Name.
+    </div>
+</body>
+</html>

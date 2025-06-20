@@ -1,16 +1,37 @@
 {% extends 'clubs/base.html' %}
 {% load static %}
 {% block content %}
-<h2>Events for {{ club.name }}</h2>
-<ul class="list-group">
-    {% for event in events %}
-    <li class="list-group-item">
-        <a href="{% url 'event_detail' event.id %}"><strong>{{ event.title }}</strong></a>
-        <p>{{ event.description|truncatewords:15 }}</p>
-        <small>Event Date: {{ event.event_date|date:"M d, Y H:i" }}</small>
-    </li>
-    {% empty %}
-    <li class="list-group-item">No events available.</li>
-    {% endfor %}
-</ul>
+    <div class="container my-4">
+        <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left me-1"></i> Back to {{ club.name }}
+        </a>
+
+        <h2 class="mb-3">Events for {{ club.name }}</h2>
+        <!-- Events List -->
+        <ul class="list-group">
+            {% for event in events %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <!-- Event Title -->
+                        <div>
+                            <a href="{% url 'event_detail' event.id %}"
+                               class="h5 text-decoration-none">{{ event.title }}</a>
+                            <p class="mb-1 text-muted">{{ event.description|truncatewords:15 }}</p>
+                            <small class="text-muted">Event Date: {{ event.event_date|date:"M d, Y H:i" }}</small>
+                        </div>
+                        <!-- View Details Button -->
+                        <div>
+                            <a href="{% url 'event_detail' event.id %}" class="btn btn-outline-primary btn-sm">View
+                                Details</a>
+                        </div>
+                    </div>
+                </li>
+            {% empty %}
+                <!-- No Events Message -->
+                <li class="list-group-item text-center text-muted">
+                    No events available.
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

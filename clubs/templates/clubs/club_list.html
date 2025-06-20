@@ -1,18 +1,84 @@
 {% extends 'clubs/base.html' %}
 {% load static %}
+{% block title %}School Clubs{% endblock %}
 {% block content %}
-<h1>School Clubs</h1>
-<div class="row">
-    {% for club in clubs %}
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">{{ club.name }}</h5>
-                <p class="card-text">{{ club.description|truncatewords:20 }}</p>
-                <a href="{% url 'club_detail' club.id %}" class="btn btn-primary">View Details</a>
+<div class="container py-4">
+    <!-- Page Title -->
+    <div class="text-center mb-4">
+        <h1 class="display-4">Explore School Clubs</h1>
+        <p class="text-muted">Find the club that matches your interests and passions!</p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'club_list' %}" class="d-flex justify-content-center mb-5">
+        <div class="input-group" style="max-width: 600px;">
+            <input type="text" name="q" class="form-control rounded-start" placeholder="Search clubs..."
+                   value="{{ query|default_if_none:'' }}">
+            <button type="submit" class="btn btn-primary rounded-end">Search</button>
+        </div>
+    </form>
+
+    <!-- Clubs Section -->
+    <div class="row g-4">  <!-- g-4 adds spacing between grid items -->
+        {% for club in clubs %}
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100"> <!-- Shadow & improved card design -->
+                <!-- Club Banner -->
+                {% if club.banner %}
+                <img src="{{ club.banner.url }}" alt="Club Banner" class="card-img-top img-fluid" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'clubs/images/placeholder.jpg' %}" alt="Default Banner" class="card-img-top img-fluid" style="height: 200px; object-fit: cover;">
+                {% endif %}
+
+                <!-- Card Content -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ club.name }}</h5>
+                    <p class="card-text text-muted">{{ club.description|truncatewords:20 }}</p>
+                    <a href="{% url 'club_detail' club.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                </div>
             </div>
         </div>
+        {% empty %}
+        <!-- No Clubs Found -->
+        <div class="text-center">
+            <p class="text-muted">No clubs found. Try searching for a different keyword.</p>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}" aria-label="First">
+                            <span aria-hidden="true">&laquo; First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Previous">
+                            <span aria-hidden="true">&lt; Previous</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Next">
+                            <span aria-hidden="true">Next &gt;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}" aria-label="Last">
+                            <span aria-hidden="true">Last &raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </div>
 {% endblock %}

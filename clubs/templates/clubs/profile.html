@@ -1,0 +1,42 @@
+{% extends 'clubs/base.html' %}
+{% load static %}
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <h2>Welcome, {{ user.username }}</h2>
+        {% if user.is_authenticated and user.profile %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Profile Details</h5>
+                        <!-- Button to go back to dashboard -->
+                        <a href="{% url 'club_list' %}" class="btn btn-secondary btn-sm">Back to Dashboard</a>
+                    </div>
+
+                    <hr>
+                    <!-- Profile Info -->
+                    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio added yet." }}</p>
+                    <p><strong>Email:</strong> {{ user.email|default:"No email provided." }}</p>
+                    <div>
+                        <p><strong>Avatar:</strong></p>
+                        {% if user.profile.profile_pic %}
+                            <img src="{{ user.profile.profile_pic.url }}?{{ user.profile.updated_at|date:'U' }}"
+                                 alt="Profile Picture" class="img-thumbnail" width="150px">
+                        {% else %}
+                            <img src="{% static 'clubs/images/avatar_placeholder.png' %}" alt="Placeholder" class="img-thumbnail" width="150px">
+
+                            <p>No profile picture uploaded. You can upload one <a
+                                    href="{% url 'edit_profile' %}">here</a>.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>No profile available for this user. Please complete your profile <a
+                    href="{% url 'edit_profile' %}">here</a>.</p>
+        {% endif %}
+    </div>
+{% endblock %}
