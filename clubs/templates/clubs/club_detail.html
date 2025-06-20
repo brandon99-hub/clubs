@@ -4,79 +4,95 @@
 <div class="container mt-3">
 
     {% if club.banner %}
-        <img src="{{ club.banner.url }}" alt="{{ club.name }} Banner" class="img-fluid mb-3 rounded" style="object-fit: cover; height: 300px; width: 50%;">
+        <img src="{{ club.banner.url }}" alt="{{ club.name }} Banner" class="img-fluid mb-3 rounded club-banner" style="object-fit: cover; height: 300px; width: 50%;">
     {% else %}
-        <img src="{% static 'placeholder.jpg' %}" alt="Default Banner" class="img-fluid mb-3 rounded" style="object-fit: cover; height: 300px; width: 100%;">
+        <img src="{% static 'placeholder.jpg' %}" alt="Default Banner" class="img-fluid mb-3 rounded club-banner" style="object-fit: cover; height: 300px; width: 100%;">
     {% endif %}
 
-    <h2>{{ club.name }}</h2>
-    <p>{{ club.description }}</p>
-    <p><strong>Admin:</strong> {{ club.admin.username }}</p>
+    <div class="section">
+        <h2 class="club-title">{{ club.name }}</h2>
+        <p class="club-description">{{ club.description }}</p>
+        <div class="club-admin-info">
+            <p><strong>Admin:</strong> {{ club.admin.username }}</p>
+        </div>
+    </div>
 
     <hr>
     <!-- Membership Info -->
     {% if user.is_authenticated %}
-        {% if membership %}
-            {% if membership.status == 'approved' %}
-                <span class="text-success"><strong>Status:</strong> You are an approved member of this club!</span>
-            {% elif membership.status == 'pending' %}
-                <span class="text-warning"><strong>Status:</strong> Your membership request is pending approval.</span>
-            {% elif membership.status == 'declined' %}
-                <span class="text-danger"><strong>Status:</strong> Your membership has been declined.</span>
+        <div class="section">
+            {% if membership %}
+                {% if membership.status == 'approved' %}
+                    <span class="text-success"><strong>Status:</strong> You are an approved member of this club!</span>
+                {% elif membership.status == 'pending' %}
+                    <span class="text-warning"><strong>Status:</strong> Your membership request is pending approval.</span>
+                {% elif membership.status == 'declined' %}
+                    <span class="text-danger"><strong>Status:</strong> Your membership has been declined.</span>
+                {% endif %}
+            {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" title="Send a membership request to join {{ club.name }}">Request to Join</button>
+                </form>
             {% endif %}
-        {% else %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" title="Send a membership request to join {{ club.name }}">Request to Join</button>
-            </form>
-        {% endif %}
+        </div>
     {% else %}
-        <p>Please <a href="{% url 'login' %}">login</a> to request membership.</p>
+        <div class="section">
+            <p>Please <a href="{% url 'login' %}">login</a> to request membership.</p>
+        </div>
     {% endif %}
 
     <hr>
 
     <!-- Events Section -->
-    <h3>Events</h3>
-    {% if club.events.exists %}
-        <ul class="list-unstyled">
-            {% for event in club.events.all %}
-                <li>
-                    <strong>{{ event.name }}</strong> - {{ event.date }}
-                    <a href="{% url 'event_detail' event.id %}" class="btn btn-link">View Details</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">No upcoming events for this club.</p>
-    {% endif %}
-    <a href="{% url 'event_list' club.id %}" class="btn btn-info">View All Events</a>
+    <div class="section event-section">
+        <h3>Events</h3>
+        {% if club.events.exists %}
+            <ul class="list-unstyled">
+                {% for event in club.events.all %}
+                    <li class="list-group-item">
+                        <strong>{{ event.title }}</strong> - {{ event.event_date|date:"M d, Y" }}
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-link">View Details</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No upcoming events for this club.</p>
+        {% endif %}
+        <a href="{% url 'event_list' club.id %}" class="btn btn-info">View All Events</a>
+    </div>
 
     <!-- Messaging and Admin Actions -->
     {% if user.is_authenticated %}
-        <a href="{% url 'messaging' club.id %}" class="btn btn-secondary">Go to Messaging</a>
-        {% if user == club.admin %}
-            <div class="admin-panel mt-4">
-                <h5 class="text-primary">Admin Actions:</h5>
-                <a href="{% url 'add_event' club.id %}" class="btn btn-info mb-2">Add Event</a>
-                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Admin Dashboard</a>
-            </div>
-        {% endif %}
+        <div class="section">
+            <a href="{% url 'messaging' club.id %}" class="btn btn-secondary">Go to Messaging</a>
+            {% if user == club.admin %}
+                <div class="admin-panel mt-4">
+                    <h5 class="text-primary">Admin Actions:</h5>
+                    <a href="{% url 'add_event' club.id %}" class="btn btn-info mb-2">Add Event</a>
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Admin Dashboard</a>
+                </div>
+            {% endif %}
+        </div>
     {% endif %}
 
     <hr>
 
     <!-- Member List Section -->
-    <h3>Club Members</h3>
-    <ul class="list-group list-group-flush">
-        {% for member in approved_memberships %}
-            <li class="list-group-item">{{ member.user.username }}</li>
-        {% empty %}
-            <p class="text-muted">No members have joined this club yet. Be the first!</p>
-        {% endfor %}
-    </ul>
+    <div class="section member-list">
+        <h3>Club Members</h3>
+        <ul class="list-group list-group-flush">
+            {% for member in approved_memberships %}
+                <li class="list-group-item">{{ member.user.username }}</li>
+            {% empty %}
+                <p class="text-muted">No members have joined this club yet. Be the first!</p>
+            {% endfor %}
+        </ul>
+    </div>
 
     <!-- Back Button -->
-    <a href="{% url 'club_list' %}" class="btn btn-outline-secondary mt-3">Back to Club List</a>
+    <div class="text-center mt-4">
+        <a href="{% url 'club_list' %}" class="btn btn-outline-secondary">Back to Club List</a>
+    </div>
 </div>
 {% endblock %}
