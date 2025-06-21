@@ -1,0 +1,6 @@
+Celery
+pytest
+channels
+django-colorfield
+django-admin-interface
+whitenoise

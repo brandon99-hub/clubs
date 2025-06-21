@@ -22,7 +22,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='message',
             name='receiver',
-            field=models.ForeignKey(default=clubs.models.get_default_user, on_delete=django.db.models.deletion.CASCADE, related_name='received_messages', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='received_messages', 
+                to=settings.AUTH_USER_MODEL, 
+                null=True,
+                blank=True,
+            ),
         ),
         migrations.AlterField(
             model_name='message',
