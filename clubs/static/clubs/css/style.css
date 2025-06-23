@@ -554,9 +554,21 @@ body.dark-mode .navbar-nav .dropdown-item:hover {
 }
 
 .card.dark-mode:hover, body.dark-mode .card.user-menu:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    border-color: #60a5fa;
+    transform: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: #475569;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.card.dark-mode:hover .card-header, body.dark-mode .card.user-menu:hover .card-header {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: #ffffff;
+    transform: none;
+    box-shadow: none;
+}
+
+.card.dark-mode:hover .card-body, body.dark-mode .card.user-menu:hover .card-body {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 }
 
 /* Enhanced glow effect for dark mode cards */
@@ -588,8 +600,8 @@ body.dark-mode .card-header {
 
 .card.dark-mode:hover .card-header, body.dark-mode .card.user-menu:hover .card-header {
     background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+    transform: none;
+    box-shadow: none;
 }
 
 body.dark-mode .card-header.user-menu-header {
@@ -601,8 +613,8 @@ body.dark-mode .card-header.user-menu-header {
 
 .card.dark-mode:hover .card-header.user-menu-header, body.dark-mode .card.user-menu:hover .card-header.user-menu-header {
     background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+    transform: none;
+    box-shadow: none;
 }
 
 /* Enhanced dark mode card body hover effects */
@@ -946,9 +958,21 @@ body.dark-mode .card.shadow-sm {
 }
 
 body.dark-mode .card.shadow-sm:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    border-color: #60a5fa;
+    transform: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: #475569;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+body.dark-mode .card.shadow-sm:hover .card-header {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: #ffffff;
+    transform: none;
+    box-shadow: none;
+}
+
+body.dark-mode .card.shadow-sm:hover .card-body {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 }
 
 body.dark-mode .card-title {
@@ -1855,4 +1879,105 @@ body.dark-mode .toggle-switch-label {
 
 body.dark-mode .toggle-switch-label:hover {
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Member Avatar Styles */
+.members-display {
+    margin: 20px 0;
+}
+
+.member-avatars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.member-avatar {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.member-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.member-count-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #6c757d;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.member-count-badge:hover {
+    background: #5a6268;
+    transform: scale(1.05);
+}
+
+/* Dark mode styles for member avatars */
+body.dark-mode .member-avatar {
+    border-color: #495057;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .member-avatar:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .member-count-badge {
+    background: #6c757d;
+    border-color: #495057;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .member-count-badge:hover {
+    background: #5a6268;
+}
+
+/* Remove hover effects in dark mode */
+@media (prefers-color-scheme: dark) {
+    .member-avatar:hover {
+        transform: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .member-count-badge:hover {
+        transform: none;
+    }
 }

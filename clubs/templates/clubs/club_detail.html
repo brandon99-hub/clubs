@@ -29,7 +29,7 @@
                 {% elif membership.status == 'declined' %}
                     <span class="text-danger"><strong>Status:</strong> Your membership has been declined.</span>
                 {% endif %}
-            {% else %}
+            {% elif user != club.admin %}
                 <form method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" title="Send a membership request to join {{ club.name }}">Request to Join</button>
@@ -81,13 +81,29 @@
     <!-- Member List Section -->
     <div class="section member-list">
         <h3>Club Members</h3>
-        <ul class="list-group list-group-flush">
-            {% for member in approved_memberships %}
-                <li class="list-group-item">{{ member.user.username }}</li>
-            {% empty %}
-                <p class="text-muted">No members have joined this club yet. Be the first!</p>
-            {% endfor %}
-        </ul>
+        {% if approved_memberships %}
+            <div class="members-display">
+                <div class="member-avatars">
+                    {% for membership in approved_memberships|slice:":7" %}
+                        <div class="member-avatar" title="{{ membership.user.username }}">
+                            {% if membership.user.profile.profile_picture %}
+                                <img src="{{ membership.user.profile.profile_picture.url }}" alt="{{ membership.user.username }}" class="avatar-img">
+                            {% else %}
+                                <div class="avatar-placeholder">{{ membership.user.username|first|upper }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% if approved_memberships|length > 7 %}
+                        <div class="member-count-badge">
+                            +{{ approved_memberships|length|add:"-7" }}
+                        </div>
+                    {% endif %}
+                </div>
+                <p class="text-muted mt-2">{{ approved_memberships|length }} member{{ approved_memberships|length|pluralize }}</p>
+            </div>
+        {% else %}
+            <p class="text-muted">No members have joined this club yet. Be the first!</p>
+        {% endif %}
     </div>
 
     <!-- Back Button -->

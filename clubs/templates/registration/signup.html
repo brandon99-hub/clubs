@@ -1,25 +1,532 @@
 {% extends "clubs/base.html" %}
 {% load static %}
-{% block title %}Sign Up{% endblock %}
+{% load socialaccount %}
+{% block title %}Sign Up - School Clubs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .auth-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08);
+        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #e1e5e9;
+    }
+    
+    .auth-header {
+        background: #fff;
+        color: #333;
+        padding: 40px 30px 30px;
+        text-align: center;
+        border-bottom: 1px solid #e1e5e9;
+    }
+    
+    .auth-header h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0;
+        color: #222;
+    }
+    
+    .auth-header p {
+        margin: 10px 0 0;
+        opacity: 0.85;
+        font-size: 1.1rem;
+        color: #555;
+    }
+    
+    .auth-body {
+        padding: 40px 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 1.08rem;
+        letter-spacing: 0.01em;
+    }
+    
+    .form-control {
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        color: #222;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.08);
+        background: #fff;
+        color: #222;
+    }
+    
+    .btn-signup {
+        background: #667eea;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-signup:hover {
+        background: #5a67d8;
+        color: white;
+        box-shadow: 0 6px 18px rgba(102, 126, 234, 0.12);
+    }
+    
+    .btn-signup:active {
+        transform: translateY(0);
+    }
+    
+    .auth-links {
+        text-align: center;
+        margin-top: 25px;
+    }
+    
+    .auth-links a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-links a:hover {
+        color: #764ba2;
+    }
+    
+    .divider {
+        margin: 20px 0;
+        text-align: center;
+        position: relative;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e1e5e9;
+    }
+    
+    .divider span {
+        background: #fff;
+        padding: 0 15px;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+    }
+    
+    .alert-danger {
+        background: #ff6b6b;
+        color: white;
+    }
+    
+    .alert-success {
+        background: #51cf66;
+        color: white;
+    }
+    
+    .alert-warning {
+        background: #ffd43b;
+        color: #333;
+    }
+    
+    .alert-info {
+        background: #74c0fc;
+        color: white;
+    }
+    
+    .form-error {
+        color: #dc3545;
+        font-size: 0.95rem;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #667eea;
+        z-index: 10;
+    }
+    
+    .password-strength {
+        margin-top: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .strength-weak { color: #dc3545; }
+    .strength-medium { color: #ffc107; }
+    .strength-strong { color: #28a745; }
+    
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .form-row .form-group {
+        flex: 1;
+    }
+    
+    /* DARK MODE */
+    body.dark-mode .auth-container,
+    html.dark-mode .auth-container {
+        background: #181a1b;
+    }
+    body.dark-mode .auth-card,
+    html.dark-mode .auth-card {
+        background: #23272f;
+        border: 1px solid #23272f;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+    }
+    body.dark-mode .auth-header,
+    html.dark-mode .auth-header {
+        background: #23272f;
+        color: #fff;
+        border-bottom: 1px solid #23272f;
+    }
+    body.dark-mode .auth-header h2,
+    html.dark-mode .auth-header h2 {
+        color: #fff;
+    }
+    body.dark-mode .auth-header p,
+    html.dark-mode .auth-header p {
+        color: #b0b3b8;
+    }
+    body.dark-mode .form-label,
+    html.dark-mode .form-label {
+        color: #fff;
+    }
+    body.dark-mode .form-control,
+    html.dark-mode .form-control {
+        background: #181a1b;
+        color: #fff;
+        border: 2px solid #23272f;
+    }
+    body.dark-mode .form-control:focus,
+    html.dark-mode .form-control:focus {
+        background: #23272f;
+        color: #fff;
+        border-color: #667eea;
+    }
+    body.dark-mode .btn-signup,
+    html.dark-mode .btn-signup {
+        background: #667eea;
+        color: #fff;
+    }
+    body.dark-mode .btn-signup:hover,
+    html.dark-mode .btn-signup:hover {
+        background: #5a67d8;
+        color: #fff;
+    }
+    body.dark-mode .divider span,
+    html.dark-mode .divider span {
+        background: #23272f;
+        color: #b0b3b8;
+    }
+    body.dark-mode .alert,
+    html.dark-mode .alert {
+        background: #23272f;
+        color: #fff;
+        border: none;
+    }
+    body.dark-mode .alert-danger,
+    html.dark-mode .alert-danger {
+        background: #c0392b;
+        color: #fff;
+    }
+    body.dark-mode .alert-success,
+    html.dark-mode .alert-success {
+        background: #27ae60;
+        color: #fff;
+    }
+    body.dark-mode .alert-warning,
+    html.dark-mode .alert-warning {
+        background: #f1c40f;
+        color: #23272f;
+    }
+    body.dark-mode .alert-info,
+    html.dark-mode .alert-info {
+        background: #2980b9;
+        color: #fff;
+    }
+    @media (max-width: 576px) {
+        .auth-card {
+            margin: 10px;
+            border-radius: 15px;
+        }
+        
+        .auth-header {
+            padding: 30px 20px 25px;
+        }
+        
+        .auth-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .auth-body {
+            padding: 30px 20px;
+        }
+        
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+    .btn-google:hover {
+        background: #f1f3f4 !important;
+        color: #222 !important;
+        border-color: #cfd8dc !important;
+        text-decoration: none;
+    }
+    body.dark-mode .btn-google, html.dark-mode .btn-google {
+        background: #23272f !important;
+        color: #fff !important;
+        border: 2px solid #3a3f4b !important;
+    }
+    body.dark-mode .btn-google:hover, html.dark-mode .btn-google:hover {
+        background: #181a1b !important;
+        color: #fff !important;
+        border-color: #23272f !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-  <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
-    <div class="card-header text-center">
-      <h4 class="mb-0">Sign Up</h4>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2><i class="fas fa-user-plus me-2"></i>Join Our Community</h2>
+            <p>Create your account and start exploring clubs</p>
+        </div>
+        
+        <div class="auth-body">
+            <!-- Messages Block -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>{{ message }}
     </div>
-    <div class="card-body">
+                {% endfor %}
+            {% endif %}
+
       <form method="post" action="{% url 'signup' %}">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+                
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        <i class="fas fa-user me-2"></i>Username
+                    </label>
+                    <input type="text" 
+                           name="{{ form.username.name }}" 
+                           id="{{ form.username.id_for_label }}"
+                           class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                           placeholder="Choose a unique username"
+                           value="{{ form.username.value|default:'' }}"
+                           required>
+                    {% if form.username.errors %}
+                        <span class="form-error">{{ form.username.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        <i class="fas fa-envelope me-2"></i>Email Address
+                    </label>
+                    <input type="email" 
+                           name="{{ form.email.name }}" 
+                           id="{{ form.email.id_for_label }}"
+                           class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                           placeholder="Enter your email address"
+                           value="{{ form.email.value|default:'' }}"
+                           required>
+                    {% if form.email.errors %}
+                        <span class="form-error">{{ form.email.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Password Fields Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <input type="password" 
+                               name="{{ form.password1.name }}" 
+                               id="{{ form.password1.id_for_label }}"
+                               class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                               placeholder="Create a strong password"
+                               required>
+                        <i class="fas fa-eye input-icon" id="togglePassword1" style="cursor: pointer;"></i>
+                        {% if form.password1.errors %}
+                            <span class="form-error">{{ form.password1.errors.0 }}</span>
+                        {% endif %}
+                        <div class="password-strength" id="passwordStrength"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Confirm Password
+                        </label>
+                        <input type="password" 
+                               name="{{ form.password2.name }}" 
+                               id="{{ form.password2.id_for_label }}"
+                               class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                               placeholder="Confirm your password"
+                               required>
+                        <i class="fas fa-eye input-icon" id="togglePassword2" style="cursor: pointer;"></i>
+                        {% if form.password2.errors %}
+                            <span class="form-error">{{ form.password2.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-signup">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
       </form>
-      <div class="mt-3 text-center">
-        <small>
-          Already have an account? <a href="{% url 'login' %}">Log In</a>
-        </small>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <a href="{% provider_login_url 'google' %}" class="btn btn-google mb-3" style="display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.08rem; background: #fff; color: #222; border: 2px solid #e1e5e9; border-radius: 12px; padding: 12px 0; transition: background 0.2s, color 0.2s;">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style="width: 22px; height: 22px; background: #fff; border-radius: 50%;"> Sign up with Google
+            </a>
+
+            <div class="auth-links">
+                <p class="mb-0">
+                    Already have an account? 
+                    <a href="{% url 'login' %}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Sign in here
+                    </a>
+                </p>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const togglePassword1 = document.getElementById('togglePassword1');
+    const togglePassword2 = document.getElementById('togglePassword2');
+    const passwordInput1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const passwordInput2 = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    if (togglePassword1 && passwordInput1) {
+        togglePassword1.addEventListener('click', function() {
+            const type = passwordInput1.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput1.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    if (togglePassword2 && passwordInput2) {
+        togglePassword2.addEventListener('click', function() {
+            const type = passwordInput2.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput2.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    // Password strength checker
+    const passwordInput = document.getElementById('{{ form.password1.id_for_label }}');
+    const strengthIndicator = document.getElementById('passwordStrength');
+    
+    if (passwordInput && strengthIndicator) {
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let message = '';
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (strength < 3) {
+                message = '<i class="fas fa-times-circle me-1"></i>Weak password';
+                strengthIndicator.className = 'password-strength strength-weak';
+            } else if (strength < 5) {
+                message = '<i class="fas fa-exclamation-triangle me-1"></i>Medium strength';
+                strengthIndicator.className = 'password-strength strength-medium';
+            } else {
+                message = '<i class="fas fa-check-circle me-1"></i>Strong password';
+                strengthIndicator.className = 'password-strength strength-strong';
+            }
+            
+            strengthIndicator.innerHTML = message;
+        });
+    }
+    
+    // Form validation enhancement
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Password confirmation check
+    const confirmPassword = document.getElementById('{{ form.password2.id_for_label }}');
+    if (confirmPassword && passwordInput) {
+        confirmPassword.addEventListener('input', function() {
+            if (this.value !== passwordInput.value) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

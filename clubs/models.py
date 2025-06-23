@@ -21,7 +21,7 @@ class Profile(models.Model):
         upload_to='profile_pics/',
         blank=True,
         null=True,
-        default='profile_pics/avatar_placeholder.png',  # Use MEDIA_ROOT path here
+        default='profile_pics/placeholder.jpeg',  # Use MEDIA_ROOT path here
         verbose_name="Profile Picture",
         help_text="Upload a profile picture for the user."
     )
@@ -81,6 +81,28 @@ class Club(models.Model):
     def is_club_active(self):
         return self.is_active
 
+    def is_user_member(self, user):
+        """Check if a user is a member of this club (including admin)"""
+        if user == self.admin:
+            return True
+        return self.memberships.filter(user=user, status='approved').exists()
+
+    def get_all_members(self):
+        """Get all members of the club including the admin"""
+        members = list(self.memberships.filter(status='approved').select_related('user'))
+        # Add admin if not already in the list
+        admin_membership = next((m for m in members if m.user == self.admin), None)
+        if not admin_membership:
+            # Create a virtual membership for admin
+            from django.contrib.auth.models import User
+            admin_membership = type('obj', (object,), {
+                'user': self.admin,
+                'status': 'approved',
+                'role': 'admin'
+            })()
+            members.insert(0, admin_membership)
+        return members
+
 
 class Event(models.Model):
     EVENT_STATUSES = (
@@ -89,6 +111,15 @@ class Event(models.Model):
         ('completed', 'Completed'),
         ('canceled', 'Canceled'),
     )
+    
+    REMINDER_CHOICES = (
+        ('none', 'No Reminder'),
+        ('15min', '15 minutes before'),
+        ('1hour', '1 hour before'),
+        ('1day', '1 day before'),
+        ('1week', '1 week before'),
+    )
+    
     club = models.ForeignKey(
         Club,
         on_delete=models.CASCADE,
@@ -113,6 +144,34 @@ class Event(models.Model):
         verbose_name="Event Image",
         help_text="Optional image for the event."
     )
+    
+    # Reminder fields
+    reminder_sent = models.BooleanField(
+        default=False,
+        verbose_name="Reminder Sent",
+        help_text="Whether reminder has been sent for this event"
+    )
+    reminder_time = models.CharField(
+        max_length=10,
+        choices=REMINDER_CHOICES,
+        default='1day',
+        verbose_name="Reminder Time",
+        help_text="When to send reminder before event"
+    )
+    
+    # Calendar integration fields
+    google_calendar_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Google Calendar Event ID",
+        help_text="ID of the event in Google Calendar"
+    )
+    calendar_synced = models.BooleanField(
+        default=False,
+        verbose_name="Synced to Calendar",
+        help_text="Whether this event is synced to external calendar"
+    )
 
     class Meta:
         ordering = ['event_date']
@@ -121,6 +180,33 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
+    
+    def get_reminder_datetime(self):
+        """Calculate when reminder should be sent based on reminder_time"""
+        from datetime import timedelta
+        
+        reminder_times = {
+            '15min': timedelta(minutes=15),
+            '1hour': timedelta(hours=1),
+            '1day': timedelta(days=1),
+            '1week': timedelta(weeks=1),
+        }
+        
+        if self.reminder_time in reminder_times:
+            return self.event_date - reminder_times[self.reminder_time]
+        return None
+    
+    def should_send_reminder(self):
+        """Check if reminder should be sent now"""
+        from django.utils import timezone
+        
+        reminder_datetime = self.get_reminder_datetime()
+        if not reminder_datetime:
+            return False
+            
+        now = timezone.now()
+        # Send reminder if we're within 5 minutes of the reminder time
+        return (reminder_datetime - timedelta(minutes=5)) <= now <= (reminder_datetime + timedelta(minutes=5))
 
 
 class Membership(models.Model):
@@ -210,8 +296,8 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         """Validate and sanitize message before saving."""
-        # Validation: Check if sender is a member of the club
-        if not Membership.objects.filter(club=self.club, user=self.sender, status='approved').exists():
+        # Validation: Check if sender is a member of the club OR the club admin
+        if not self.club.is_user_member(self.sender):
             raise ValidationError(f"{self.sender.username} is not a member of the club.")
 
         # Escape the content to prevent XSS attacks
@@ -227,3 +313,102 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender.username} in {self.club.name}"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    club = models.ForeignKey('Club', on_delete=models.CASCADE, related_name='notifications')
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)
+    content = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = 'Notification'
+        verbose_name_plural = 'Notifications'
+
+    def __str__(self):
+        return f"Notification for {self.user} in {self.club}: {self.content}"
+
+
+class Document(models.Model):
+    club = models.ForeignKey(
+        "Club",
+        on_delete=models.CASCADE,
+        related_name='documents',
+        verbose_name="Club"
+    )
+    title = models.CharField(max_length=200, verbose_name="Document Title")
+    description = models.TextField(blank=True, verbose_name="Description")
+    file = models.FileField(
+        upload_to='club_documents/',
+        verbose_name="Document File"
+    )
+    uploaded_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Uploaded By"
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Upload Date")
+    is_public = models.BooleanField(
+        default=True,
+        verbose_name="Public Document",
+        help_text="If checked, all club members can view this document"
+    )
+
+    class Meta:
+        ordering = ['-uploaded_at']
+        verbose_name = "Document"
+        verbose_name_plural = "Documents"
+
+    def __str__(self):
+        return f"{self.title} - {self.club.name}"
+
+    def get_file_extension(self):
+        """Get the file extension for display purposes"""
+        if self.file:
+            return self.file.name.split('.')[-1].upper()
+        return ''
+
+    def get_file_size(self):
+        """Get file size in human readable format"""
+        if self.file:
+            size = self.file.size
+            for unit in ['B', 'KB', 'MB', 'GB']:
+                if size < 1024.0:
+                    return f"{size:.1f} {unit}"
+                size /= 1024.0
+        return '0 B'
+
+
+class GoogleCalendarToken(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='google_calendar_token',
+        verbose_name="User"
+    )
+    access_token = models.TextField(verbose_name="Access Token")
+    refresh_token = models.TextField(verbose_name="Refresh Token")
+    token_expiry = models.DateTimeField(verbose_name="Token Expiry")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+
+    class Meta:
+        verbose_name = "Google Calendar Token"
+        verbose_name_plural = "Google Calendar Tokens"
+
+    def __str__(self):
+        return f"Google Calendar Token for {self.user.username}"
+
+    def is_expired(self):
+        """Check if the token is expired"""
+        from django.utils import timezone
+        return timezone.now() >= self.token_expiry
+
+    def needs_refresh(self):
+        """Check if token needs refresh (5 minutes before expiry)"""
+        from django.utils import timezone
+        from datetime import timedelta
+        return timezone.now() >= (self.token_expiry - timedelta(minutes=5))

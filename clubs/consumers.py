@@ -5,7 +5,7 @@ import logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from asgiref.sync import sync_to_async  # Added for async email handling
-from DjangoProject2 import settings
+from DjangoProject24 import settings
 import re  # Added for validation
 
 logger = logging.getLogger(__name__)

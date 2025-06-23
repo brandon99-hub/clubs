@@ -1,10 +1,11 @@
 {% load static %}
+{% load notification_extras %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}School Club Management{% endblock %}</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'clubs/images/favicon.png' %}">
@@ -14,6 +15,23 @@
     <link href="{% static 'clubs/css/style.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% block extra_css %}{% endblock %}
+    <style>
+    /* Solid light blue navbar in light mode only */
+    body:not(.dark-mode) .navbar-custom-light {
+        background: rgba(227,240,255,0.92) !important;
+        border-bottom: 1.5px solid #c6e0ff;
+        box-shadow: 0 2px 8px rgba(60,60,60,0.04);
+    }
+    body:not(.dark-mode) .navbar-custom-light .navbar-nav .nav-link,
+    body:not(.dark-mode) .navbar-custom-light .navbar-brand,
+    body:not(.dark-mode) .navbar-custom-light .navbar-toggler,
+    body:not(.dark-mode) .navbar-custom-light .navbar-nav .nav-link.active {
+        color: #222 !important;
+    }
+    body:not(.dark-mode) .navbar-custom-light .navbar-nav .nav-link:hover {
+        color: #1976d2 !important;
+    }
+    </style>
     <!-- SEO Meta -->
     <meta name="description" content="{% block meta_description %}Manage your school clubs effectively{% endblock %}">
     <meta name="keywords"
@@ -28,7 +46,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom-light">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <i class="fas fa-users me-2"></i>All Clubs
@@ -43,7 +61,7 @@
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'my_clubs' %}">
-                                <i class="fas fa-user-friends me-1"></i>My Clubs
+                                <i class="fas fa-users me-1"></i>My Clubs
                             </a>
                         </li>
                     {% endif %}
@@ -51,6 +69,39 @@
                 
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
+                        <!-- Notification Bell -->
+                        <li class="nav-item dropdown me-2">
+                            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                {% with unread_count=unread_notifications_count %}
+                                    {% if unread_count > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75rem;">{{ unread_count }}{% if unread_count > 9 %}+{% endif %}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notificationDropdown" style="min-width: 340px; max-width: 400px;">
+                                <li class="dropdown-header bg-light fw-bold py-2 px-3">Notifications</li>
+                                <div style="max-height: 350px; overflow-y: auto;">
+                                    {% with notifications=user.notifications.all|slice:":10" %}
+                                        {% if notifications %}
+                                            {% for n in notifications %}
+                                                <li class="notification-item {% if not n.is_read %}bg-info bg-opacity-10{% endif %} px-3 py-2 border-bottom">
+                                                    <a href="{{ n|notification_url }}" class="d-block text-decoration-none text-dark notification-link" data-id="{{ n.id }}">
+                                                        <span class="fw-semibold">{{ n.content }}</span><br>
+                                                        <small class="text-muted">{{ n.timestamp|timesince }} ago</small>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="px-3 py-2 text-muted">No notifications yet.</li>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="text-center py-2"><a href="#" class="text-primary small">View all notifications</a></li>
+                            </ul>
+                        </li>
+                        <!-- End Notification Bell -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user me-1"></i>{{ user.username }}
@@ -59,8 +110,8 @@
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">
                                     <i class="fas fa-id-card me-2"></i>Profile
                                 </a></li>
-                                <li><a class="dropdown-item" href="{% url 'password_change' %}">
-                                    <i class="fas fa-key me-2"></i>Change Password
+                                <li><a class="dropdown-item" href="{% url 'settings' %}">
+                                    <i class="fas fa-cog me-2"></i>Settings
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">
@@ -151,5 +202,16 @@
 
     <!-- Additional Page-Specific Scripts -->
     {% block extra_js %}{% endblock %}
+
+    <script>
+    // Mark notifications as read when dropdown is opened
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    if (notificationDropdown) {
+        notificationDropdown.addEventListener('show.bs.dropdown', function () {
+            fetch('{% url "mark_notifications_read" %}', {method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'}});
+            // Optionally, update badge visually here
+        });
+    }
+    </script>
 </body>
 </html>

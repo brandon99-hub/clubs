@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Django AllAuth URLs
+    path('accounts/', include('allauth.urls')),  # AllAuth URLs
     path('', include('clubs.urls')),  # Main app URLs
 ]
 if settings.DEBUG:  # Ensure this runs only during development

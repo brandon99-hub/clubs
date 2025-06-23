@@ -6,19 +6,30 @@ from django.shortcuts import (
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView,LoginView
-from .models import Club, Event, Membership,Profile
-from .forms import MessageForm, CustomUserCreationForm,ProfileForm,EventForm
+from .models import Club, Event, Membership,Profile, Notification, Document, GoogleCalendarToken
+from .forms import MessageForm, CustomUserCreationForm,ProfileForm,EventForm, DocumentForm
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Count
-from django.http import HttpResponseForbidden
-import json
+from django.http import HttpResponseForbidden, HttpResponse, JsonResponse
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_POST
+import json
+from django.contrib.auth import login
+from django.urls import reverse_lazy
+from django.db.models import Q
+from .services.google_calendar import GoogleCalendarService
+
 @login_required
 def my_clubs(request):
-    # Example query: Fetch clubs related to the logged-in user
-    user_clubs = Club.objects.filter(memberships__user=request.user, memberships__status='approved')
-
+    # Get clubs where user is a member (approved membership)
+    member_clubs = Club.objects.filter(memberships__user=request.user, memberships__status='approved')
+    
+    # Get clubs where user is the admin
+    admin_clubs = Club.objects.filter(admin=request.user)
+    
+    # Combine both querysets and remove duplicates
+    user_clubs = (member_clubs | admin_clubs).distinct().order_by('name')
 
     return render(request, 'clubs/my_clubs.html', {'user_clubs': user_clubs})
 
@@ -77,6 +88,9 @@ class CustomLogoutView(LogoutView):
     If you're getting a 405 error on GET, this resolves it.
     """
     http_method_names = ['get', 'post']
+    def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+        return redirect('/login/')
 
 
 def signup(request):
@@ -126,6 +140,10 @@ def club_detail(request, club_id):
     """
     club = get_object_or_404(Club, id=club_id)
     membership = Membership.objects.filter(user=request.user, club=club).first()
+    
+    # Get all members including the admin
+    all_members = club.get_all_members()
+    
     if request.method == 'POST':
         # User is requesting to join the club
         if not membership:
@@ -134,7 +152,12 @@ def club_detail(request, club_id):
         else:
             messages.info(request, 'You have already applied or are a member.')
         return redirect('club_detail', club_id=club_id)
-    return render(request, 'clubs/club_detail.html', {'club': club, 'membership': membership})
+    
+    return render(request, 'clubs/club_detail.html', {
+        'club': club, 
+        'membership': membership,
+        'approved_memberships': all_members
+    })
 
 
 @login_required
@@ -161,10 +184,8 @@ def messaging(request, club_id):
     # Fetch the club or raise a 404
     club = get_object_or_404(Club, id=club_id)
 
-    # Check if the current user is authorized
-    is_member = Membership.objects.filter(user=request.user, club=club, status='approved').exists()
-
-    if not is_member and request.user != club.admin:
+    # Check if the current user is authorized (member or admin)
+    if not club.is_user_member(request.user):
         messages.warning(request, "You must be an approved member to access the messaging feature.")
         return redirect('club_detail', club_id=club_id)
 
@@ -186,49 +207,68 @@ def messaging(request, club_id):
 
     # Fetch the messages for the club
     messages_list = club.messages.order_by('timestamp')
+    
+    # Fetch documents for the club
+    documents = club.documents.all()
 
     # Render the messaging template
     return render(request, 'clubs/messaging.html', {
         'club': club,
-        'messages': messages_list,
+        'chat_messages': messages_list,
+        'documents': documents,
         'form': form,
         'room_name': room_name,  # Pass the room name to the template
     })
 
 @login_required
 def admin_dashboard(request):
-    # Verify that the user is an admin
-    if not request.user.is_staff:  # Replace with a more specific condition if needed
-        raise PermissionDenied("You are not authorized to view this page.")
+    # Verify that the user is an admin of at least one club
+    user_clubs = Club.objects.filter(admin=request.user)
+    if not user_clubs.exists():
+        messages.error(request, "You are not an admin of any clubs.")
+        return redirect('club_list')
 
     # Get all clubs where the user is the admin
-    clubs = Club.objects.filter(admin=request.user).exclude(id__isnull=True).annotate(member_count=Count('memberships'))
+    clubs = user_clubs.exclude(id__isnull=True)
     if not clubs.exists():
         print("No clubs found for this user")
 
     print("Clubs:", list(clubs.values()))  # Debugging output
 
-    # Compute additional statistics
-    club_names = [club.name for club in clubs]  # Club names for Chart.js
-    member_counts = [club.member_count for club in clubs]  # Total members per club
+    # Pagination for clubs - 4 clubs per page (2x2 grid)
+    paginator = Paginator(clubs, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    # Retrieve approved and pending memberships per club
+    # Get pending and approved memberships for each club on the current page
+    pending_memberships = {}
+    approved_members = {}
+    
+    for club in page_obj.object_list:
+        pending_memberships[club.id] = Membership.objects.filter(club=club, status='pending').select_related('user')
+        # Get all members including admin
+        approved_members[club.id] = club.get_all_members()
+
+    # Compute additional statistics for charts (all clubs, not just current page)
+    all_clubs = clubs  # Use all clubs for chart data
+    club_names = [club.name for club in all_clubs]  # Club names for Chart.js
     approved_counts = []
     pending_counts = []
-
-    for club in clubs:
-        # Count approved and pending memberships for each club
-        approved = Membership.objects.filter(club=club, status='approved').count()
-        pending = Membership.objects.filter(club=club, status='pending').count()
-
-        approved_counts.append(approved)
-        pending_counts.append(pending)
+    
+    for club in all_clubs:
+        # Count all members including admin
+        approved_count = len(club.get_all_members())
+        pending_count = Membership.objects.filter(club=club, status='pending').count()
+        approved_counts.append(approved_count)
+        pending_counts.append(pending_count)
 
     # Serialize the data securely for the frontend
     context = {
-        'clubs': clubs,
+        'clubs': page_obj.object_list,
+        'page_obj': page_obj,
+        'pending_memberships': pending_memberships,
+        'approved_members': approved_members,
         'club_names': mark_safe(json.dumps(club_names)),  # Safely pass club names as JSON
-        'member_counts': mark_safe(json.dumps(member_counts)),  # Safely pass member counts as JSON
         'approved_counts': mark_safe(json.dumps(approved_counts)),  # Approved members data
         'pending_counts': mark_safe(json.dumps(pending_counts)),  # Pending members data
     }
@@ -252,6 +292,20 @@ def approve_member(request, membership_id):
     membership.status = 'approved'
     membership.save()
     messages.success(request, f"{membership.user.username} approved for {membership.club.name}.")
+    return redirect('admin_dashboard')
+
+@login_required
+def reject_member(request, membership_id):
+    """
+    Rejects a user's membership request if the current user is the club admin.
+    """
+    membership = get_object_or_404(Membership, id=membership_id)
+    if request.user != membership.club.admin:
+        messages.error(request, "Not authorized.")
+        return redirect('admin_dashboard')
+    membership.status = 'declined'
+    membership.save()
+    messages.success(request, f"{membership.user.username} rejected for {membership.club.name}.")
     return redirect('admin_dashboard')
 
 @login_required
@@ -287,3 +341,156 @@ def add_event(request, club_id):
         form = EventForm()
 
     return render(request, 'clubs/add_event.html', {'club': club, 'form': form})
+
+@login_required
+@require_POST
+def mark_notifications_read(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return HttpResponse(status=204)
+
+@login_required
+def upload_document(request, club_id):
+    """Upload a document to a club."""
+    club = get_object_or_404(Club, id=club_id)
+    
+    # Check if the current user is authorized (member or admin)
+    if not club.is_user_member(request.user):
+        messages.error(request, "You must be an approved member to upload documents.")
+        return redirect('club_detail', club_id=club_id)
+    
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.club = club
+            document.uploaded_by = request.user
+            document.save()
+            messages.success(request, f"Document '{document.title}' uploaded successfully!")
+            return redirect('messaging', club_id=club_id)
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = DocumentForm()
+    
+    return render(request, 'clubs/upload_document.html', {
+        'club': club,
+        'form': form
+    })
+
+@login_required
+def download_document(request, document_id):
+    """Download a document."""
+    document = get_object_or_404(Document, id=document_id)
+    
+    # Check if user has access to the document (member or admin)
+    if not document.club.is_user_member(request.user):
+        messages.error(request, "You don't have permission to access this document.")
+        return redirect('club_detail', club_id=document.club.id)
+    
+    # Check if document is public or user is admin
+    if not document.is_public and request.user != document.club.admin:
+        messages.error(request, "This document is not publicly accessible.")
+        return redirect('club_detail', club_id=document.club.id)
+    
+    # Serve the file
+    response = HttpResponse(document.file, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{document.file.name.split("/")[-1]}"'
+    return response
+
+# Google Calendar Integration Views
+@login_required
+def google_calendar_auth(request):
+    """Initiate Google Calendar OAuth2 flow"""
+    calendar_service = GoogleCalendarService(request.user)
+    auth_url = calendar_service.create_auth_url()
+    return redirect(auth_url)
+
+@login_required
+def google_calendar_callback(request):
+    """Handle Google Calendar OAuth2 callback"""
+    code = request.GET.get('code')
+    if not code:
+        messages.error(request, 'Authorization failed. Please try again.')
+        return redirect('settings')
+    
+    try:
+        calendar_service = GoogleCalendarService(request.user)
+        calendar_service.exchange_code_for_token(code)
+        messages.success(request, 'Google Calendar connected successfully!')
+    except Exception as e:
+        messages.error(request, f'Failed to connect Google Calendar: {str(e)}')
+    
+    return redirect('settings')
+
+@login_required
+def sync_event_to_calendar(request, event_id):
+    """Sync a specific event to Google Calendar"""
+    event = get_object_or_404(Event, id=event_id)
+    
+    # Check if user is admin of the event's club
+    if event.club.admin != request.user:
+        messages.error(request, 'You can only sync events from your own clubs.')
+        return redirect('event_detail', event_id=event_id)
+    
+    try:
+        calendar_service = GoogleCalendarService(request.user)
+        result, error = calendar_service.create_event(event)
+        
+        if result:
+            messages.success(request, f'Event "{event.title}" synced to Google Calendar!')
+        else:
+            messages.error(request, f'Failed to sync event: {error}')
+            
+    except Exception as e:
+        messages.error(request, f'Failed to sync event: {str(e)}')
+    
+    return redirect('event_detail', event_id=event_id)
+
+@login_required
+def sync_all_events(request):
+    """Sync all user's events to Google Calendar"""
+    try:
+        calendar_service = GoogleCalendarService(request.user)
+        results = calendar_service.sync_all_events()
+        
+        success_count = sum(1 for r in results if r['success'])
+        total_count = len(results)
+        
+        if success_count > 0:
+            messages.success(request, f'Successfully synced {success_count} out of {total_count} events to Google Calendar.')
+        else:
+            messages.warning(request, 'No events were synced. Please check your Google Calendar connection.')
+            
+    except Exception as e:
+        messages.error(request, f'Failed to sync events: {str(e)}')
+    
+    return redirect('admin_dashboard')
+
+@login_required
+def disconnect_google_calendar(request):
+    """Disconnect Google Calendar integration"""
+    try:
+        GoogleCalendarToken.objects.filter(user=request.user).delete()
+        messages.success(request, 'Google Calendar disconnected successfully.')
+    except Exception as e:
+        messages.error(request, f'Failed to disconnect: {str(e)}')
+    
+    return redirect('settings')
+
+@login_required
+def profile(request):
+    return render(request, 'clubs/profile.html')
+
+@login_required
+def settings(request):
+    """User settings page"""
+    if request.method == 'POST':
+        # Handle email subscription toggle
+        subscribed_to_emails = request.POST.get('subscribed_to_emails') == 'on'
+        profile = request.user.profile
+        profile.subscribed_to_emails = subscribed_to_emails
+        profile.save()
+        messages.success(request, 'Settings updated successfully!')
+        return redirect('settings')
+    
+    return render(request, 'clubs/settings.html')

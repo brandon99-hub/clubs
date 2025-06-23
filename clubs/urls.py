@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from . import views
 from clubs import views as club_views
 from django.contrib.auth.views import LogoutView
-from .views import profile_view
+from .views import profile_view, CustomLogoutView
 
 
 def home_redirect(request):
@@ -29,13 +29,25 @@ urlpatterns = [
     path('club/<int:club_id>/messaging/', views.messaging, name='messaging'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('approve/<int:membership_id>/', views.approve_member, name='approve_member'),
+    path('reject/<int:membership_id>/', views.reject_member, name='reject_member'),
+
+    # Document URLs
+    path('club/<int:club_id>/upload_document/', views.upload_document, name='upload_document'),
+    path('document/<int:document_id>/download/', views.download_document, name='download_document'),
+
+    # Google Calendar Integration URLs
+    path('calendar/auth/', views.google_calendar_auth, name='google_calendar_auth'),
+    path('calendar/callback/', views.google_calendar_callback, name='google_calendar_callback'),
+    path('event/<int:event_id>/sync/', views.sync_event_to_calendar, name='sync_event_to_calendar'),
+    path('calendar/sync-all/', views.sync_all_events, name='sync_all_events'),
+    path('calendar/disconnect/', views.disconnect_google_calendar, name='disconnect_google_calendar'),
 
     # 3) Auth URLs
     path('signup/', club_views.signup, name='signup'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('profile/', profile_view, name='profile'),
-    path('settings/', views.user_settings, name='settings'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('settings/', views.settings, name='settings'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('my_clubs/', views.my_clubs, name='my_clubs'),
     path('club/<int:club_id>/add_event/', views.add_event, name='add_event'),
@@ -71,5 +83,7 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'),
         name='password_reset_complete'
     ),
+
+    path('mark_notifications_read/', views.mark_notifications_read, name='mark_notifications_read'),
 
 ]

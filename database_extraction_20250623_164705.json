@@ -1,0 +1,675 @@
+{
+  "extraction_timestamp": "2025-06-23T16:47:05.547049",
+  "database_info": {
+    "tables": [
+      "django_migrations",
+      "sqlite_sequence",
+      "auth_group_permissions",
+      "auth_user_groups",
+      "auth_user_user_permissions",
+      "account_emailconfirmation",
+      "account_emailaddress",
+      "django_admin_log",
+      "django_content_type",
+      "auth_permission",
+      "auth_group",
+      "auth_user",
+      "django_session",
+      "django_site",
+      "socialaccount_socialapp_sites",
+      "socialaccount_socialapp",
+      "socialaccount_socialtoken",
+      "socialaccount_socialaccount",
+      "clubs_membership",
+      "admin_interface_theme",
+      "clubs_event",
+      "clubs_club",
+      "clubs_profile",
+      "clubs_message"
+    ],
+    "total_tables": 24
+  },
+  "data": {
+    "users": {
+      "count": 5,
+      "records": [
+        {
+          "id": 1,
+          "username": "brand",
+          "email": "2400863@students.kcau.ac.ke",
+          "first_name": "",
+          "last_name": "",
+          "is_active": true,
+          "is_staff": false,
+          "is_superuser": false,
+          "date_joined": "2025-02-28T06:14:14.334111+00:00",
+          "last_login": "2025-03-06T08:03:25.126889+00:00"
+        },
+        {
+          "id": 2,
+          "username": "brandon",
+          "email": "brandmwenja@gmail.com",
+          "first_name": "",
+          "last_name": "",
+          "is_active": true,
+          "is_staff": true,
+          "is_superuser": true,
+          "date_joined": "2025-02-28T07:06:24.833681+00:00",
+          "last_login": "2025-06-23T13:35:02.265539+00:00"
+        },
+        {
+          "id": 3,
+          "username": "Matthew",
+          "email": "nobodylaxus@gmail.com",
+          "first_name": "",
+          "last_name": "",
+          "is_active": true,
+          "is_staff": false,
+          "is_superuser": false,
+          "date_joined": "2025-03-03T12:53:00.250953+00:00",
+          "last_login": "2025-03-05T16:54:25.194288+00:00"
+        },
+        {
+          "id": 4,
+          "username": "Brandon3",
+          "email": "sheisjeniffer@gmail.com",
+          "first_name": "",
+          "last_name": "",
+          "is_active": true,
+          "is_staff": false,
+          "is_superuser": false,
+          "date_joined": "2025-06-20T20:44:21.781572+00:00",
+          "last_login": null
+        },
+        {
+          "id": 5,
+          "username": "Brandon34",
+          "email": "sheisjeniffer@gmail.com",
+          "first_name": "",
+          "last_name": "",
+          "is_active": true,
+          "is_staff": false,
+          "is_superuser": false,
+          "date_joined": "2025-06-20T20:47:04.901907+00:00",
+          "last_login": "2025-06-20T20:47:13.858466+00:00"
+        }
+      ]
+    },
+    "profiles": {
+      "count": 5,
+      "records": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "user_username": "brand",
+          "profile_pic": null,
+          "bio": "nahh",
+          "updated_at": "2025-03-06T08:03:25.134481+00:00",
+          "subscribed_to_emails": true
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "user_username": "brandon",
+          "profile_pic": "profile_pics/8173b2a3fd0db76f0fb78ba791856cc7.jpg",
+          "bio": "yes",
+          "updated_at": "2025-06-23T13:35:02.291183+00:00",
+          "subscribed_to_emails": true
+        },
+        {
+          "id": 3,
+          "user_id": 3,
+          "user_username": "Matthew",
+          "profile_pic": "profile_pics/39b9488712432d67ce879b14317dcb92.jpg",
+          "bio": "holla",
+          "updated_at": "2025-03-05T16:54:25.203006+00:00",
+          "subscribed_to_emails": true
+        },
+        {
+          "id": 4,
+          "user_id": 4,
+          "user_username": "Brandon3",
+          "profile_pic": "profile_pics/avatar_placeholder.png",
+          "bio": "",
+          "updated_at": "2025-06-20T20:44:23.712678+00:00",
+          "subscribed_to_emails": true
+        },
+        {
+          "id": 5,
+          "user_id": 5,
+          "user_username": "Brandon34",
+          "profile_pic": "profile_pics/avatar_placeholder.png",
+          "bio": "",
+          "updated_at": "2025-06-20T20:47:13.869536+00:00",
+          "subscribed_to_emails": true
+        }
+      ]
+    },
+    "clubs": {
+      "count": 4,
+      "records": [
+        {
+          "id": 1,
+          "name": "Data Science Club",
+          "description": "Cultivating Data Skills",
+          "admin_id": 2,
+          "admin_username": "brandon",
+          "created_at": "2025-03-02T13:09:36.559555+00:00",
+          "banner": "club_banners/Data_Science_Club_2025_20250302_160529.jpg",
+          "is_active": true
+        },
+        {
+          "id": 2,
+          "name": "Tech Club",
+          "description": "A hub for students interested in programming, robotics, and emerging technology.\r\nActivities include coding challenges, app development, and building electronic projects.\r\nDevelops innovation, analytical thinking, and teamwork.",
+          "admin_id": 2,
+          "admin_username": "brandon",
+          "created_at": "2025-03-05T12:19:57.929573+00:00",
+          "banner": "club_banners/CodeSets.jpeg",
+          "is_active": true
+        },
+        {
+          "id": 3,
+          "name": "Chess Club",
+          "description": "A club that sharpens strategic thinking through competitive and friendly chess matches.\r\nMembers analyze games, learn tactics, and participate in tournaments.\r\nImproves problem-solving, patience, and decision-making.",
+          "admin_id": 1,
+          "admin_username": "brand",
+          "created_at": "2025-03-05T12:20:50.086526+00:00",
+          "banner": "club_banners/queens_gambit.jpeg",
+          "is_active": true
+        },
+        {
+          "id": 4,
+          "name": "Debate Club",
+          "description": "A space for students to develop critical thinking and public speaking skills.\r\nMembers engage in structured debates on current affairs, ethics, and academic topics.\r\nEncourages confidence, persuasion, and logical reasoning.",
+          "admin_id": 2,
+          "admin_username": "brandon",
+          "created_at": "2025-03-05T12:21:34.803336+00:00",
+          "banner": "club_banners/Robust_logo_for_a_debate_league___Logo__business_card_contest.jpeg",
+          "is_active": true
+        }
+      ]
+    },
+    "events": {
+      "count": 1,
+      "records": [
+        {
+          "id": 1,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "title": "Annual Tech Expo",
+          "description": "Technology Horizons Building Skills For Sustainable Development",
+          "event_date": "2025-03-10T14:00:00+00:00",
+          "status": "upcoming",
+          "created_at": "2025-03-04T10:58:18.913133+00:00",
+          "image": "event_images/IMG-20250303-WA0040.jpg"
+        }
+      ]
+    },
+    "memberships": {
+      "count": 5,
+      "records": [
+        {
+          "id": 1,
+          "user_id": 2,
+          "user_username": "brandon",
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "role": "admin",
+          "status": "approved",
+          "applied_at": "2025-03-02T13:29:59.716221+00:00"
+        },
+        {
+          "id": 2,
+          "user_id": 3,
+          "user_username": "Matthew",
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "role": "member",
+          "status": "approved",
+          "applied_at": "2025-03-03T12:55:07.845200+00:00"
+        },
+        {
+          "id": 3,
+          "user_id": 1,
+          "user_username": "brand",
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "role": "member",
+          "status": "approved",
+          "applied_at": "2025-03-03T23:37:53.190139+00:00"
+        },
+        {
+          "id": 4,
+          "user_id": 3,
+          "user_username": "Matthew",
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "role": "member",
+          "status": "approved",
+          "applied_at": "2025-03-05T12:48:39.266255+00:00"
+        },
+        {
+          "id": 5,
+          "user_id": 1,
+          "user_username": "brand",
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "role": "admin",
+          "status": "approved",
+          "applied_at": "2025-03-05T17:57:03.000475+00:00"
+        }
+      ]
+    },
+    "messages": {
+      "count": 33,
+      "records": [
+        {
+          "id": 1,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "hey",
+          "timestamp": "2025-03-02T14:27:20.974779+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 2,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "yes",
+          "timestamp": "2025-03-02T15:17:17.878961+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 3,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "yes",
+          "timestamp": "2025-03-02T15:17:32.751239+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 4,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "hey",
+          "timestamp": "2025-03-02T19:32:07.072291+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 5,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "hey",
+          "timestamp": "2025-03-02T19:48:04.753829+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 6,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "hey",
+          "timestamp": "2025-03-03T09:18:01.352241+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 7,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "TC",
+          "timestamp": "2025-03-03T10:50:17.407215+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 8,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "alvin",
+          "timestamp": "2025-03-03T11:23:57.779992+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 9,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-03T11:40:56.305599+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 10,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "TC",
+          "timestamp": "2025-03-03T12:01:01.748114+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 11,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-03T12:13:11.217660+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 12,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "brandon",
+          "timestamp": "2025-03-03T12:19:25.082977+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 13,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "TC",
+          "timestamp": "2025-03-03T12:26:35.456768+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 14,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Matthew",
+          "timestamp": "2025-03-03T12:49:52.297723+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 15,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-03T12:51:06.089716+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 16,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "HTTP response complete for ['127.0.0.1', 53867] 127.0.0.1:53867 - - [03/Mar/2025:15:49:52] \"GET /static/clubs/css/style.css\" 304 - HTTP close for ['127.0.0.1', 53868] HTTP response complete for ['127.0.0.1', 53868] 127.0.0.1:53868 - - [03/Mar/2025:15:49:52] \"GET /static/clubs/js/script.js\" 304 - 127.0.0.1:53871 - - [03/Mar/2025:15:49:52] \"WSCONNECTING /ws/chat/club_1/\" - - Upgraded connection ['127.0.0.1', 53871] to WebSocket User 'brandon' trying to connect to room 'club_1' WebSocket ['127.0.0.1', 53871] open and established 127.0.0.1:53871 - - [03/Mar/2025:15:49:52] \"WSCONNECT /ws/chat/club_1/\" - - WebSocket ['127.0.0.1', 53871] accepted by application 127.0.0.1:53873 - - [03/Mar/2025:15:49:52] \"WSCONNECTING /ws/chat/club_1/\" - - Upgraded connection ['127.0.0.1', 53873] to WebSocket User 'brandon' trying to connect to room 'club_1' WebSocket ['127.0.0.1', 53873] open and established 127.0.0.1:53873 - - [03/Mar/2025:15:49:52] \"WSCONNECT /ws/chat/club_1/\" - - WebSocket ['127.0.0.1', 53873] accepted by application",
+          "timestamp": "2025-03-03T12:51:53.542578+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 17,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-03T13:02:44.311539+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 18,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "TC",
+          "timestamp": "2025-03-03T20:02:46.692337+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 19,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "yes",
+          "timestamp": "2025-03-03T23:28:58.953735+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 20,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 1,
+          "sender_username": "brand",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "nobody",
+          "timestamp": "2025-03-03T23:40:20.047617+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 21,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "alvin",
+          "timestamp": "2025-03-04T13:28:46.878066+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 22,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "TC",
+          "timestamp": "2025-03-04T14:50:34.046593+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 23,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-04T14:52:41.015714+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 24,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "brandon",
+          "timestamp": "2025-03-04T15:04:01.061680+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 25,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Matthew",
+          "timestamp": "2025-03-04T15:04:35.900912+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 26,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": 1,
+          "receiver_username": "brand",
+          "content": "Data",
+          "timestamp": "2025-03-05T12:49:57.815951+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 27,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "alvin",
+          "timestamp": "2025-03-05T16:39:59.591843+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 28,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "alvin",
+          "timestamp": "2025-03-05T16:46:42.818624+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 29,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "TC",
+          "timestamp": "2025-03-05T16:46:54.778319+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 30,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "TC",
+          "timestamp": "2025-03-05T16:48:34.996870+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 31,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 3,
+          "sender_username": "Matthew",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "alvin",
+          "timestamp": "2025-03-05T16:51:55.277233+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 32,
+          "club_id": 3,
+          "club_name": "Chess Club",
+          "sender_id": 1,
+          "sender_username": "brand",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "Data",
+          "timestamp": "2025-03-06T07:48:17.517294+00:00",
+          "is_deleted": false
+        },
+        {
+          "id": 33,
+          "club_id": 1,
+          "club_name": "Data Science Club",
+          "sender_id": 2,
+          "sender_username": "brandon",
+          "receiver_id": null,
+          "receiver_username": null,
+          "content": "hey",
+          "timestamp": "2025-06-20T22:18:45.136690+00:00",
+          "is_deleted": false
+        }
+      ]
+    }
+  },
+  "summary": {
+    "total_records": 53,
+    "users_count": 5,
+    "profiles_count": 5,
+    "clubs_count": 4,
+    "events_count": 1,
+    "memberships_count": 5,
+    "messages_count": 33
+  }
+}

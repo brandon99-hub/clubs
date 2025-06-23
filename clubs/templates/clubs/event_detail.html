@@ -1,26 +1,137 @@
 {% extends 'clubs/base.html' %}
 {% load static %}
+
+{% block title %}{{ event.title }} - {{ event.club.name }}{% endblock %}
+
 {% block content %}
 <div class="container my-4">
-    <h2 class="mb-3">{{ event.title }}</h2>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-calendar-event me-2"></i>{{ event.title }}
+                    </h2>
+                    <small>{{ event.club.name }}</small>
+                </div>
+                <div class="card-body">
+                    {% if event.image %}
+                        <div class="text-center mb-4">
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="img-fluid rounded" style="max-height: 300px;">
+                        </div>
+                    {% endif %}
 
-    <!-- Check if an image exists before displaying -->
-    {% if event.image %}
-     <div class="card mb-4 "> <!-- Center-align the image -->
-          <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-detail-image">
+                    <div class="mb-4">
+                        <h5>Event Description</h5>
+                        <p class="lead">{{ event.description }}</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6><i class="fas fa-clock me-2"></i>Date & Time</h6>
+                                    <p class="mb-0">{{ event.event_date|date:"F j, Y" }}</p>
+                                    <p class="mb-0 text-muted">{{ event.event_date|date:"g:i A" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Status</h6>
+                                    <span class="badge bg-{% if event.status == 'upcoming' %}primary{% elif event.status == 'ongoing' %}success{% elif event.status == 'completed' %}secondary{% else %}danger{% endif %}">
+                                        {{ event.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if event.reminder_time != 'none' %}
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-bell me-2"></i>Reminder Settings</h6>
+                            <p class="mb-0">
+                                Reminders will be sent {{ event.get_reminder_time_display }} the event.
+                                {% if event.reminder_sent %}
+                                    <span class="badge bg-success ms-2">Reminder Sent</span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2">Reminder Pending</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    {% if event.calendar_synced %}
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-calendar-check me-2"></i>Calendar Integration</h6>
+                            <p class="mb-0">This event is synced with your calendar.</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'event_list' event.club.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Events
+                        </a>
+                        {% if event.club.admin == user %}
+                            <a href="#" class="btn btn-warning">
+                                <i class="fas fa-edit me-1"></i>Edit Event
+                            </a>
+                            {% if not event.calendar_synced %}
+                                <a href="{% url 'sync_event_to_calendar' event.id %}" class="btn btn-success">
+                                    <i class="fas fa-sync me-1"></i>Sync to Calendar
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        <button class="btn btn-outline-primary" onclick="addToCalendar()">
+                            <i class="fas fa-calendar-plus me-1"></i>Add to Calendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info me-2"></i>Event Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Created:</strong> {{ event.created_at|date:"M d, Y" }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Club:</strong> {{ event.club.name }}
+                        </li>
+                        {% if event.reminder_time != 'none' %}
+                            <li class="mb-2">
+                                <strong>Reminder:</strong> {{ event.get_reminder_time_display }}
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-
-    {% endif %}
-
-    <p>{{ event.description }}</p>
-    <p><strong>Event Date:</strong> {{ event.event_date|date:"M d, Y H:i" }}</p>
-
-    {% if event.location %}
-    <p><strong>Location:</strong> {{ event.location }}</p>
-    {% endif %}
-
-    <a href="{% url 'event_list' event.club.id %}" class="btn btn-secondary mt-3">
-        <i class="fas fa-arrow-left me-1"></i> Back to Events
-    </a>
 </div>
+
+<script>
+function addToCalendar() {
+    // Create calendar event data
+    const eventData = {
+        title: "{{ event.title }}",
+        description: "{{ event.description|escapejs }}",
+        start: "{{ event.event_date|date:'Y-m-d\TH:i:s' }}",
+        end: "{{ event.event_date|date:'Y-m-d\TH:i:s' }}", // You might want to add end time to your model
+        location: "{{ event.club.name }}"
+    };
+    
+    // Create calendar URL
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventData.title)}&details=${encodeURIComponent(eventData.description)}&dates=${eventData.start}/${eventData.end}&location=${encodeURIComponent(eventData.location)}`;
+    
+    // Open in new window
+    window.open(calendarUrl, '_blank');
+}
+</script>
 {% endblock %}

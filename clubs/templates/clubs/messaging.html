@@ -14,58 +14,149 @@
         const username = "{{ user.username }}";  // Logged-in user's username
     </script>
 
-    <!-- Chatbox -->
-    <div class="chat-box p-3 mb-4 rounded shadow"
-         style="height: 500px; background-color: #f8f9fa; overflow-y: auto; border: 1px solid #dee2e6;">
-        <div id="chat-area"></div> <!-- Dynamic messaging through WebSocket -->
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="messagingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab">
+                <i class="fas fa-comments me-2"></i>Messages
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab">
+                <i class="fas fa-file-alt me-2"></i>Documents
+                {% if documents %}
+                    <span class="badge bg-secondary ms-1">{{ documents.count }}</span>
+                {% endif %}
+            </button>
+        </li>
+    </ul>
 
-        {% for message in messages %}
-            {% if message.sender == user %}
-                <!-- Message sent by logged-in user -->
-                <div class="text-end mb-3">
-                    <div class="d-inline-block bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
-                        <p class="mb-2">
-                            <strong>You:</strong> {{ message.content }}
-                        </p>
-                        <small class="text-light">{{ message.timestamp|date:"H:i" }}</small>
-                    </div>
+    <!-- Tab Content -->
+    <div class="tab-content" id="messagingTabContent">
+        <!-- Messages Tab -->
+        <div class="tab-pane fade show active" id="messages" role="tabpanel">
+            <!-- Chatbox -->
+            <div class="chat-box p-3 mb-4 rounded shadow"
+                 style="height: 500px; background-color: #f8f9fa; overflow-y: auto; border: 1px solid #dee2e6;">
+                <div id="chat-area"></div> <!-- Dynamic messaging through WebSocket -->
+
+                {% for message in chat_messages %}
+                    {% if message.sender == user %}
+                        <!-- Message sent by logged-in user -->
+                        <div class="text-end mb-3">
+                            <div class="d-inline-block bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                                <p class="mb-2">
+                                    <strong>You:</strong> {{ message.content }}
+                                </p>
+                                <small class="text-light">{{ message.timestamp|date:"H:i" }}</small>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Message sent by another user -->
+                        <div class="text-start mb-3">
+                            <div class="d-flex align-items-start">
+                                <img src="
+                                {% if message.sender.profile.profile_pic and message.sender.profile.profile_pic.url %}{{ message.sender.profile.profile_pic.url }}{% else %}{% static 'clubs/images/avatar_placeholder.png' %}{% endif %}"
+                                     alt="{{ message.sender.username }}'s avatar"
+                                     class="rounded-circle me-3 shadow-sm"
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                <div class="d-inline-block bg-light text-dark p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                                    <p class="mb-2">
+                                        <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                                    </p>
+                                    <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <!-- Empty State for No Messages -->
+                    <p class="text-muted text-center mt-5">No messages yet. Start the conversation!</p>
+                {% endfor %}
+            </div>
+
+            <!-- Typing Indicator -->
+            <p id="typing-indicator" class="text-muted mb-3 text-center" style="font-style: italic;"></p>
+
+            <!-- Message Input -->
+            <form method="post" class="d-flex align-items-center">
+                {% csrf_token %}
+                <input type="text" id="message-input" name="content" class="form-control me-3 shadow-sm"
+                       placeholder="Type your message..." required style="border-radius: 50px;">
+                <button type="submit" class="btn btn-primary rounded-circle shadow-sm" style="width: 50px; height: 50px;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Documents Tab -->
+        <div class="tab-pane fade" id="documents" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Club Documents</h4>
+                <a href="{% url 'upload_document' club.id %}" class="btn btn-primary">
+                    <i class="fas fa-upload me-1"></i>Upload Document
+                </a>
+            </div>
+
+            {% if documents %}
+                <div class="row">
+                    {% for document in documents %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="card-title mb-1">{{ document.title }}</h6>
+                                            {% if document.description %}
+                                                <p class="card-text small text-muted mb-2">{{ document.description|truncatewords:10 }}</p>
+                                            {% endif %}
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-user me-1"></i>{{ document.uploaded_by.username }}
+                                                </small>
+                                                <small class="text-muted">
+                                                    {{ document.uploaded_at|date:"M d, Y" }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="small text-muted">
+                                            <i class="fas fa-file me-1"></i>{{ document.get_file_extension }}
+                                            <span class="ms-2">{{ document.get_file_size }}</span>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'download_document' document.id %}" class="btn btn-outline-primary">
+                                                <i class="fas fa-download me-1"></i>Download
+                                            </a>
+                                            {% if not document.is_public %}
+                                                <span class="btn btn-outline-warning disabled">
+                                                    <i class="fas fa-lock me-1"></i>Private
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
-                <!-- Message sent by another user -->
-                <div class="text-start mb-3">
-                    <div class="d-flex align-items-start">
-                        <img src="
-                        {% if message.sender.profile.profile_pic and message.sender.profile.profile_pic.url %}{{ message.sender.profile.profile_pic.url }}{% else %}{% static 'clubs/images/avatar_placeholder.png' %}{% endif %}"
-                             alt="{{ message.sender.username }}'s avatar"
-                             class="rounded-circle me-3 shadow-sm"
-                             style="width: 50px; height: 50px; object-fit: cover;">
-                        <div class="d-inline-block bg-light text-dark p-3 rounded-3 shadow-sm" style="max-width: 75%;">
-                            <p class="mb-2">
-                                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
-                            </p>
-                            <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
-                        </div>
-                    </div>
+                <div class="text-center py-5">
+                    <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No documents yet</h5>
+                    <p class="text-muted">Upload the first document to share with your club members!</p>
+                    <a href="{% url 'upload_document' club.id %}" class="btn btn-primary">
+                        <i class="fas fa-upload me-1"></i>Upload First Document
+                    </a>
                 </div>
             {% endif %}
-        {% empty %}
-            <!-- Empty State for No Messages -->
-            <p class="text-muted text-center mt-5">No messages yet. Start the conversation!</p>
-        {% endfor %}
+        </div>
     </div>
-
-    <!-- Typing Indicator -->
-    <p id="typing-indicator" class="text-muted mb-3 text-center" style="font-style: italic;"></p>
-
-    <!-- Message Input -->
-    <form method="post" class="d-flex align-items-center">
-        {% csrf_token %}
-        <input type="text" id="message-input" name="content" class="form-control me-3 shadow-sm"
-               placeholder="Type your message..." required style="border-radius: 50px;">
-        <button type="submit" class="btn btn-primary rounded-circle shadow-sm" style="width: 50px; height: 50px;">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </form>
 </div>
 
 <script src="{% static 'clubs/js/script.js' %}"></script>

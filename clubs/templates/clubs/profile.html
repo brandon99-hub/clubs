@@ -1,42 +1,200 @@
 {% extends 'clubs/base.html' %}
 {% load static %}
-{% block title %}
-    Profile
+{% block title %}Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-bg {
+        min-height: 90vh;
+        background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+    .profile-card {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(60,60,60,0.10);
+        padding: 40px 32px 32px 32px;
+        max-width: 420px;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        position: relative;
+    }
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #e3f0ff;
+        box-shadow: 0 4px 16px rgba(102,126,234,0.10);
+        margin-bottom: 18px;
+        background: #f8f9fa;
+    }
+    .profile-username {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 6px;
+        letter-spacing: 0.01em;
+    }
+    .profile-email {
+        color: #1976d2;
+        font-size: 1.08rem;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .profile-bio {
+        font-size: 1.08rem;
+        color: #444;
+        margin-bottom: 24px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 16px 18px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .edit-profile-btn {
+        background: #667eea;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 32px;
+        font-size: 1.08rem;
+        font-weight: 600;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        margin-top: 10px;
+    }
+    .edit-profile-btn:hover {
+        background: #5a67d8;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(102,126,234,0.18);
+    }
+    body.dark-mode .edit-profile-btn:hover, html.dark-mode .edit-profile-btn:hover {
+        background: #667eea;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        filter: none;
+        text-decoration: none;
+        transition: none;
+    }
+    .profile-back {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        font-size: 1.2rem;
+        color: #1976d2;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+    }
+    .profile-back:hover {
+        color: #667eea;
+        text-decoration: underline;
+    }
+    @media (max-width: 576px) {
+        .profile-card {
+            padding: 24px 8px 18px 8px;
+        }
+        .profile-back {
+            top: 12px;
+            left: 12px;
+        }
+    }
+    /* DARK MODE PROFILE PAGE */
+    body.dark-mode .profile-bg, html.dark-mode .profile-bg {
+        background: linear-gradient(135deg, #181a1b 0%, #23272f 100%) !important;
+    }
+    body.dark-mode .profile-card, html.dark-mode .profile-card {
+        background: #23272f !important;
+        color: #f1f3f4;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+        border: 1.5px solid #23272f;
+    }
+    body.dark-mode .profile-avatar, html.dark-mode .profile-avatar {
+        border: 4px solid #23272f;
+        background: #181a1b;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    body.dark-mode .profile-username, html.dark-mode .profile-username {
+        color: #fff;
+    }
+    body.dark-mode .profile-email, html.dark-mode .profile-email {
+        color: #90caf9;
+    }
+    body.dark-mode .profile-bio, html.dark-mode .profile-bio {
+        background: #181a1b;
+        color: #e0e0e0;
+    }
+    body.dark-mode .edit-profile-btn, html.dark-mode .edit-profile-btn {
+        background: #667eea;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        border: none;
+    }
+    body.dark-mode .edit-profile-btn:hover, html.dark-mode .edit-profile-btn:hover {
+        background: #667eea;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        filter: none;
+        text-decoration: none;
+        transition: none;
+    }
+    body.dark-mode .profile-back, html.dark-mode .profile-back {
+        color: #90caf9;
+    }
+    body.dark-mode .profile-back:hover, html.dark-mode .profile-back:hover {
+        color: #fff;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <div class="container py-4">
-        <h2>Welcome, {{ user.username }}</h2>
-        {% if user.is_authenticated and user.profile %}
-            <div class="card mt-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5>Profile Details</h5>
-                        <!-- Button to go back to dashboard -->
-                        <a href="{% url 'club_list' %}" class="btn btn-secondary btn-sm">Back to Dashboard</a>
-                    </div>
-
-                    <hr>
-                    <!-- Profile Info -->
-                    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio added yet." }}</p>
-                    <p><strong>Email:</strong> {{ user.email|default:"No email provided." }}</p>
-                    <div>
-                        <p><strong>Avatar:</strong></p>
-                        {% if user.profile.profile_pic %}
-                            <img src="{{ user.profile.profile_pic.url }}?{{ user.profile.updated_at|date:'U' }}"
-                                 alt="Profile Picture" class="img-thumbnail" width="150px">
-                        {% else %}
-                            <img src="{% static 'clubs/images/avatar_placeholder.png' %}" alt="Placeholder" class="img-thumbnail" width="150px">
-
-                            <p>No profile picture uploaded. You can upload one <a
-                                    href="{% url 'edit_profile' %}">here</a>.</p>
-                        {% endif %}
-                    </div>
-                </div>
+<div class="profile-bg">
+    {% if user.is_authenticated and user.profile %}
+        <div class="profile-card">
+            <a href="{% url 'club_list' %}" class="profile-back">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}?{{ user.profile.updated_at|date:'U' }}"
+                     alt="Profile Picture" class="profile-avatar">
+            {% else %}
+                <img src="{% static 'clubs/images/avatar_placeholder.png' %}" alt="Placeholder" class="profile-avatar">
+            {% endif %}
+            <div class="profile-username">
+                <i class="fas fa-user-circle me-2"></i>{{ user.username }}
             </div>
-        {% else %}
-            <p>No profile available for this user. Please complete your profile <a
-                    href="{% url 'edit_profile' %}">here</a>.</p>
-        {% endif %}
-    </div>
+            <div class="profile-email">
+                <i class="fas fa-envelope"></i> {{ user.email|default:"No email provided." }}
+            </div>
+            <div class="profile-bio">
+                <i class="fas fa-quote-left me-2"></i> {{ user.profile.bio|default:"No bio added yet." }}
+            </div>
+            <a href="{% url 'edit_profile' %}" class="edit-profile-btn">
+                <i class="fas fa-edit me-2"></i>Edit Profile
+            </a>
+        </div>
+    {% else %}
+        <div class="profile-card">
+            <div class="profile-username">
+                <i class="fas fa-user-circle me-2"></i>{{ user.username }}
+            </div>
+            <div class="profile-bio">
+                No profile available for this user. Please complete your profile <a href="{% url 'edit_profile' %}">here</a>.
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

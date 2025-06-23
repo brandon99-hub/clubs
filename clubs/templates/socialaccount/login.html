@@ -1,5 +1,6 @@
 {% extends "clubs/base.html" %}
-{% block title %}Password Reset Sent{% endblock %}
+{% load i18n %}
+{% block title %}Sign In Via Google{% endblock %}
 {% block extra_css %}
 <style>
     .auth-bg {
@@ -21,9 +22,14 @@
         text-align: center;
     }
     .auth-icon {
-        font-size: 2.5rem;
-        color: #51cf66;
-        margin-bottom: 10px;
+        margin-bottom: 18px;
+    }
+    .auth-icon img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(60,60,60,0.10);
     }
     .auth-title {
         font-size: 2rem;
@@ -37,7 +43,7 @@
         margin-bottom: 24px;
     }
     .btn-auth {
-        background: #667eea;
+        background: #4285f4;
         color: #fff;
         border: none;
         border-radius: 12px;
@@ -45,14 +51,18 @@
         font-size: 1.08rem;
         font-weight: 600;
         transition: background 0.2s, box-shadow 0.2s;
-        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        box-shadow: 0 2px 8px rgba(66,133,244,0.10);
         margin-top: 10px;
         width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     .btn-auth:hover {
-        background: #5a67d8;
+        background: #3367d6;
         color: #fff;
-        box-shadow: 0 4px 16px rgba(102,126,234,0.18);
+        box-shadow: 0 4px 16px rgba(66,133,244,0.18);
     }
     @media (max-width: 576px) {
         .auth-card {
@@ -76,15 +86,15 @@
         color: #b0b3b8;
     }
     body.dark-mode .btn-auth, html.dark-mode .btn-auth {
-        background: #667eea;
+        background: #4285f4;
         color: #fff;
-        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        box-shadow: 0 2px 8px rgba(66,133,244,0.10);
         border: none;
     }
     body.dark-mode .btn-auth:hover, html.dark-mode .btn-auth:hover {
-        background: #667eea;
+        background: #4285f4;
         color: #fff;
-        box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        box-shadow: 0 2px 8px rgba(66,133,244,0.10);
         filter: none;
         text-decoration: none;
         transition: none;
@@ -96,11 +106,16 @@
 <div class="auth-bg">
     <div class="auth-card">
         <div class="auth-icon">
-            <i class="fas fa-envelope-open-text"></i>
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
         </div>
-        <div class="auth-title text-success">Password Reset Email Sent</div>
-        <div class="auth-desc">If the email you entered matches our records, you should receive a password reset link shortly. Please check your inbox.</div>
-        <a href="{% url 'login' %}" class="btn btn-auth">Back to Login</a>
+        <div class="auth-title">Sign In Via Google</div>
+        <div class="auth-desc">You are about to sign in using your Google account.<br>Click continue to proceed.</div>
+        <form method="post" action="">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-auth">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style="width: 22px; height: 22px;"> Continue with Google
+            </button>
+        </form>
     </div>
 </div>
-{% endblock %}
+{% endblock %} 
