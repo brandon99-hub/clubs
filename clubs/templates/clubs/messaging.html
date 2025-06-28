@@ -38,41 +38,45 @@
             <!-- Chatbox -->
             <div class="chat-box p-3 mb-4 rounded shadow"
                  style="height: 500px; background-color: #f8f9fa; overflow-y: auto; border: 1px solid #dee2e6;">
-                <div id="chat-area"></div> <!-- Dynamic messaging through WebSocket -->
-
-                {% for message in chat_messages %}
-                    {% if message.sender == user %}
-                        <!-- Message sent by logged-in user -->
-                        <div class="text-end mb-3">
-                            <div class="d-inline-block bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
-                                <p class="mb-2">
-                                    <strong>You:</strong> {{ message.content }}
-                                </p>
-                                <small class="text-light">{{ message.timestamp|date:"H:i" }}</small>
-                            </div>
-                        </div>
-                    {% else %}
-                        <!-- Message sent by another user -->
-                        <div class="text-start mb-3">
-                            <div class="d-flex align-items-start">
-                                <img src="
-                                {% if message.sender.profile.profile_pic and message.sender.profile.profile_pic.url %}{{ message.sender.profile.profile_pic.url }}{% else %}{% static 'clubs/images/avatar_placeholder.png' %}{% endif %}"
-                                     alt="{{ message.sender.username }}'s avatar"
-                                     class="rounded-circle me-3 shadow-sm"
-                                     style="width: 50px; height: 50px; object-fit: cover;">
-                                <div class="d-inline-block bg-light text-dark p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                <div id="chat-area">
+                    {% for message in chat_messages %}
+                        {% if message.sender == user %}
+                            <!-- Message sent by logged-in user -->
+                            <div class="text-end mb-3">
+                                <div class="d-inline-block bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
                                     <p class="mb-2">
-                                        <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                                        <strong>You:</strong> {{ message.content }}
                                     </p>
-                                    <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
+                                    <small class="text-light">{{ message.timestamp|date:"H:i" }}</small>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
-                {% empty %}
-                    <!-- Empty State for No Messages -->
-                    <p class="text-muted text-center mt-5">No messages yet. Start the conversation!</p>
-                {% endfor %}
+                        {% else %}
+                            <!-- Message sent by another user -->
+                            <div class="text-start mb-3">
+                                <div class="d-flex align-items-start">
+                                    <img src="
+                                    {% if message.sender.profile.profile_pic and message.sender.profile.profile_pic.url %}{{ message.sender.profile.profile_pic.url }}{% else %}{% static 'clubs/images/avatar_placeholder.png' %}{% endif %}"
+                                         alt="{{ message.sender.username }}'s avatar"
+                                         class="rounded-circle me-3 shadow-sm"
+                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div class="d-inline-block bg-light text-dark p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                                        <p class="mb-2">
+                                            <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                                        </p>
+                                        <small class="text-muted">{{ message.timestamp|date:"H:i" }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <!-- Empty State for No Messages -->
+                        <p class="text-muted text-center mt-5">No messages yet. Start the conversation!</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="spinner-border text-primary" style="display:none; position:fixed; top:50%; left:50%; z-index:9999;" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
 
             <!-- Typing Indicator -->
@@ -159,5 +163,5 @@
     </div>
 </div>
 
-<script src="{% static 'clubs/js/script.js' %}"></script>
+<script src="{% static 'clubs/js/messaging.js' %}"></script>
 {% endblock %}

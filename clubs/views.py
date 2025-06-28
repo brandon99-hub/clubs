@@ -6,7 +6,7 @@ from django.shortcuts import (
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView,LoginView
-from .models import Club, Event, Membership,Profile, Notification, Document, GoogleCalendarToken
+from .models import Club, Event, Membership,Profile, Notification, Document, GoogleCalendarToken, Message
 from .forms import MessageForm, CustomUserCreationForm,ProfileForm,EventForm, DocumentForm
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -19,6 +19,7 @@ from django.contrib.auth import login
 from django.urls import reverse_lazy
 from django.db.models import Q
 from .services.google_calendar import GoogleCalendarService
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def my_clubs(request):
@@ -494,3 +495,46 @@ def settings(request):
         return redirect('settings')
     
     return render(request, 'clubs/settings.html')
+
+@login_required
+@require_POST
+def save_message_ajax(request, club_id):
+    """AJAX endpoint to save messages to database without page reload."""
+    try:
+        club = get_object_or_404(Club, id=club_id)
+        
+        # Check if the current user is authorized (member or admin)
+        if not club.is_user_member(request.user):
+            return JsonResponse({'error': 'You must be an approved member to send messages.'}, status=403)
+        
+        # Parse JSON data
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        
+        # Validate message content
+        if not content:
+            return JsonResponse({'error': 'Message content cannot be empty.'}, status=400)
+        
+        if len(content) > 500:
+            return JsonResponse({'error': 'Message too long. Maximum 500 characters.'}, status=400)
+        
+        # Create and save the message
+        message = Message.objects.create(
+            club=club,
+            sender=request.user,
+            content=content
+        )
+        
+        # Return success response with message data
+        return JsonResponse({
+            'success': True,
+            'message_id': message.id,
+            'content': message.content,
+            'timestamp': message.timestamp.isoformat(),
+            'sender_username': message.sender.username
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': 'An error occurred while saving the message.'}, status=500)

@@ -18,19 +18,19 @@
                     <!-- Email Notifications Section -->
                     <div class="mb-4">
                         <h5><i class="fas fa-envelope me-2"></i>Email Notifications</h5>
-                        <form method="post">
-                            {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="subscribed_to_emails" name="subscribed_to_emails" 
-                                       {% if profile.subscribed_to_emails %}checked{% endif %}>
+                       {% if profile.subscribed_to_emails %}checked{% endif %}>
                                 <label class="form-check-label" for="subscribed_to_emails">
                                     Receive email notifications for club activities
-                                </label>
-                            </div>
+            </label>
+        </div>
                             <button type="submit" class="btn btn-primary mt-2">
                                 <i class="fas fa-save me-1"></i>Save Email Settings
                             </button>
-                        </form>
+    </form>
                     </div>
                     
                     <hr>

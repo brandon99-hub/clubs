@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'secondary',  # Map DEBUG messages to 'secondary' color
@@ -100,7 +104,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [("127.0.0.1", 6380)],  # Updated to use Docker Redis on port 6380
+            "hosts": [("127.0.0.1", 6379)],  # Changed from 6380 to 6379
         },
     },
 }
@@ -193,7 +197,7 @@ LOGGING = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -225,7 +229,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'brandmwenja@gmail.com'  # Replace with your email ID
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Set in environment, not in code
-DEFAULT_FROM_EMAIL = 'your_email@example.com'
+DEFAULT_FROM_EMAIL = 'brandmwenja@gmail.com'
 
 # For development, use console backend to print emails to the console:
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

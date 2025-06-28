@@ -168,64 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // WebSocket Chat Logic
-    if (typeof roomName !== 'undefined' && roomName) {
-        const chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
-        );
-
-        chatSocket.onerror = function (e) {
-            console.error("WebSocket error occurred:", e);
-            alert("Chat server error. Please try again later.");
-        };
-
-        chatSocket.onclose = function (e) {
-            console.error("Chat socket closed unexpectedly. Code:", e.code, "Reason:", e.reason);
-        };
-
-        chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            console.log("WebSocket data received:", data); // Helps you debug the data received
-
-            const messageContainer = document.getElementById('chat-area');
-            const typingIndicator = document.getElementById('typing-indicator');
-
-            // Update typing indicator
-            if ("typing" in data) {
-                if (data.typing && data.username !== username) {
-                    typingIndicator.textContent = `${data.username} is typing...`;
-                } else {
-                    typingIndicator.textContent = ""; // Clear typing indicator when typing stops
-                }
-            }
-
-            // Handle only chat messages, ignore everything else
-            if ("message" in data) {
-                const messageDiv = document.createElement("div");
-                messageDiv.classList.add(
-                    "chat-message",
-                    data.username === username ? "text-end" : "text-start",
-                    "mb-3"
-                );
-
-                messageDiv.innerHTML = `
-            <div class="${data.username === username ? "bg-primary text-white" : "bg-light text-dark"} p-2 rounded">
-                <p class="mb-1"><strong>${data.username === username ? "You" : data.username}:</strong> ${data.message}</p>
-            </div>
-        `;
-
-                // Append the message to the chat area and auto-scroll to the bottom
-                messageContainer.appendChild(messageDiv);
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-            } else {
-                // Skip any data that isn't a recognized type
-                console.log("Unprocessed data ignored:", data);
-            }
-        };
-    } else {
-        console.log("Room name not defined, skipping WebSocket connection.");
-    }
-
     // Add ripple effect CSS dynamically
     const style = document.createElement('style');
     style.textContent = `
