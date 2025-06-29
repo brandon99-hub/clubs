@@ -4,7 +4,7 @@ import urllib.parse
 import logging
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from asgiref.sync import sync_to_async, database_sync_to_async
+from asgiref.sync import sync_to_async
 from DjangoProject24 import settings
 import re
 from clubs.models import Message, Club
@@ -82,14 +82,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             logger.warning(f"Unauthenticated connection attempt from IP: {client_ip}")
             await self.close()
 
-    @database_sync_to_async
+    @sync_to_async
     def _get_club(self, club_id):
         try:
             return Club.objects.get(id=club_id)
         except Club.DoesNotExist:
             return None
 
-    @database_sync_to_async
+    @sync_to_async
     def _check_user_membership(self):
         if not hasattr(self, 'club_id'): # Should have been set in connect
              return False
@@ -114,7 +114,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             logger.error(f"Error during WebSocket disconnection: {str(e)}")
 
-    @database_sync_to_async
+    @sync_to_async
     def _save_message(self, club_id, sender_user, content, temp_id):
         try:
             club = Club.objects.get(id=club_id)
