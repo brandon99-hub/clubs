@@ -4,3 +4,14 @@ channels
 django-colorfield
 django-admin-interface
 whitenoise
+daphne
+dotenv
+django-allauth
+psycopg2-binary
+requests
+jwt
+google-auth 
+google-auth-oauthlib 
+google-auth-httplib2
+google-api-python-client
+
