@@ -496,45 +496,47 @@ def settings(request):
     
     return render(request, 'clubs/settings.html')
 
-@login_required
-@require_POST
-def save_message_ajax(request, club_id):
-    """AJAX endpoint to save messages to database without page reload."""
-    try:
-        club = get_object_or_404(Club, id=club_id)
-        
-        # Check if the current user is authorized (member or admin)
-        if not club.is_user_member(request.user):
-            return JsonResponse({'error': 'You must be an approved member to send messages.'}, status=403)
-        
-        # Parse JSON data
-        data = json.loads(request.body)
-        content = data.get('content', '').strip()
-        
-        # Validate message content
-        if not content:
-            return JsonResponse({'error': 'Message content cannot be empty.'}, status=400)
-        
-        if len(content) > 500:
-            return JsonResponse({'error': 'Message too long. Maximum 500 characters.'}, status=400)
-        
-        # Create and save the message
-        message = Message.objects.create(
-            club=club,
-            sender=request.user,
-            content=content
-        )
-        
-        # Return success response with message data
-        return JsonResponse({
-            'success': True,
-            'message_id': message.id,
-            'content': message.content,
-            'timestamp': message.timestamp.isoformat(),
-            'sender_username': message.sender.username
-        })
-        
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': 'An error occurred while saving the message.'}, status=500)
+# The save_message_ajax view is no longer needed as messages are saved via WebSocket consumer.
+# We can remove it.
+# @login_required
+# @require_POST
+# def save_message_ajax(request, club_id):
+#     """AJAX endpoint to save messages to database without page reload."""
+#     try:
+#         club = get_object_or_404(Club, id=club_id)
+#
+#         # Check if the current user is authorized (member or admin)
+#         if not club.is_user_member(request.user):
+#             return JsonResponse({'error': 'You must be an approved member to send messages.'}, status=403)
+#
+#         # Parse JSON data
+#         data = json.loads(request.body)
+#         content = data.get('content', '').strip()
+#
+#         # Validate message content
+#         if not content:
+#             return JsonResponse({'error': 'Message content cannot be empty.'}, status=400)
+#
+#         if len(content) > 500:
+#             return JsonResponse({'error': 'Message too long. Maximum 500 characters.'}, status=400)
+#
+#         # Create and save the message
+#         message = Message.objects.create(
+#             club=club,
+#             sender=request.user,
+#             content=content
+#         )
+#
+#         # Return success response with message data
+#         return JsonResponse({
+#             'success': True,
+#             'message_id': message.id,
+#             'content': message.content,
+#             'timestamp': message.timestamp.isoformat(),
+#             'sender_username': message.sender.username
+#         })
+#
+#     except json.JSONDecodeError:
+#         return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+#     except Exception as e:
+#         return JsonResponse({'error': 'An error occurred while saving the message.'}, status=500)
