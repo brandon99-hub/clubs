@@ -46,7 +46,7 @@ A Django-based web application for managing school clubs, events, and member com
 
 3. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install -r dependencies
    ```
 
 4. **Set up environment variables**
